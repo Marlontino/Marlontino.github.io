@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statement Parser Project | Niko Perry</title>
+  <link rel="stylesheet" href="../../style.css">
+  <style>
+    .project-header {
+      background: linear-gradient(135deg, #8e44ad, #9b59b6);
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    
+    .project-content {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      color: #9b59b6;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    
+    .project-image {
+      width: 100%;
+      max-width: 600px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+    
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .tech-tag {
+      background: #8e44ad;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    
+    .github-button {
+      display: inline-block;
+      background: #333;
+      color: white;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-top: 1rem;
+      transition: background 0.3s ease;
+    }
+    
+    .github-button:hover {
+      background: #555;
+    }
+    
+    .code-block {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 5px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+    
+    .grammar-block {
+      background: #f0f8ff;
+      border: 1px solid #b0d4f1;
+      border-radius: 5px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="project-header">
+    <div class="project-content">
+      <a href="../../index.html" class="back-link">← Back to Portfolio</a>
+      <h1>Statement Parser</h1>
+      <p>A Flex/Bison implementation for parsing arithmetic expressions and assignment statements</p>
+    </div>
+  </div>
+
+  <div class="project-content">
+    <img src="https://via.placeholder.com/600x300/8e44ad/ffffff?text=Statement+Parser" alt="Statement Parser Project" class="project-image">
+    
+    <h2>Project Overview</h2>
+    <p>This project implements a custom parser using Flex (lexical analyzer) and Bison (parser generator) to process text files containing arithmetic expressions and assignment statements. It demonstrates compiler theory concepts and language processing techniques.</p>
+    
+    <h2>Technologies Used</h2>
+    <div class="tech-stack">
+      <span class="tech-tag">Flex</span>
+      <span class="tech-tag">Bison</span>
+      <span class="tech-tag">C</span>
+      <span class="tech-tag">Compiler Theory</span>
+      <span class="tech-tag">BNF Grammar</span>
+      <span class="tech-tag">Lexical Analysis</span>
+    </div>
+    
+    <h2>Key Features</h2>
+    <ul>
+      <li><strong>Lexical Analysis:</strong> Flex-based tokenizer for recognizing identifiers, operators, and literals</li>
+      <li><strong>Syntax Parsing:</strong> Bison-based parser implementing BNF grammar rules</li>
+      <li><strong>Assignment Statements:</strong> Supports variable assignment with arithmetic expressions</li>
+      <li><strong>Arithmetic Expressions:</strong> Handles complex mathematical expressions with operators</li>
+      <li><strong>Error Detection:</strong> Identifies syntax errors and invalid tokens</li>
+      <li><strong>Formatted Output:</strong> Aligned status messages for clear result presentation</li>
+    </ul>
+    
+    <h2>How It Works</h2>
+    <ol>
+      <li><strong>Input Processing:</strong> Reads text file line by line for parsing</li>
+      <li><strong>Tokenization:</strong> Flex scanner breaks input into tokens (identifiers, operators, literals)</li>
+      <li><strong>Grammar Parsing:</strong> Bison parser applies BNF grammar rules to validate syntax</li>
+      <li><strong>Syntax Validation:</strong> Checks if statements conform to defined grammar</li>
+      <li><strong>Error Reporting:</strong> Provides detailed feedback on valid/invalid statements</li>
+      <li><strong>Output Generation:</strong> Displays original input with validation status</li>
+    </ol>
+    
+    <h2>BNF Grammar Structure</h2>
+    <div class="grammar-block">
+&lt;digit&gt;       ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9<br>
+&lt;operator&gt;    ::= + | - | % | / | *<br>
+&lt;id&gt;          ::= &lt;char&gt; | &lt;id&gt; &lt;char&gt; | &lt;id&gt; &lt;digit&gt;<br>
+&lt;exp&gt;         ::= &lt;exp&gt; &lt;op&gt; &lt;exp&gt; | (&lt;exp&gt;) | &lt;id&gt; | &lt;digit&gt;<br>
+&lt;statement&gt;   ::= &lt;id&gt; = &lt;exp&gt; ;
+    </div>
+    
+    <h2>Usage Example</h2>
+    <div class="code-block">
+# Compile the project<br>
+make<br><br>
+# Run with sample input file<br>
+./scanner scanme.txt<br><br>
+# Clean generated files<br>
+make clean
+    </div>
+    
+    <h2>Sample Input/Output</h2>
+    <h3>Input (scanme.txt):</h3>
+    <div class="code-block">
+good = one1 + two2 - three3 / four4 ;<br>
+good * i8766e98e + bignum<br>
+bad = = one1 + two2 - three3 / four4 ;
+    </div>
+    
+    <h3>Output:</h3>
+    <div class="code-block">
+good = one1 + two2 - three3 / four4 ;    -- Valid Statement<br><br>
+good * i8766e98e + bignum                -- Valid Expression<br><br>
+bad = = one1 + two2 - three3 / four4 ;   -- Invalid token: syntax error
+    </div>
+    
+    <h2>Technical Implementation</h2>
+    <h3>Core Components</h3>
+    <ul>
+      <li><strong>scanner.l:</strong> Flex lexical analyzer defining token patterns and actions</li>
+      <li><strong>parser.y:</strong> Bison parser implementing BNF grammar rules and syntax validation</li>
+      <li><strong>makefile:</strong> Build automation for Flex/Bison compilation pipeline</li>
+    </ul>
+    
+    <h3>Parsing Process</h3>
+    <ul>
+      <li><strong>Token Recognition:</strong> Flex identifies tokens like identifiers, operators, and literals</li>
+      <li><strong>Grammar Validation:</strong> Bison applies grammar rules to validate statement structure</li>
+      <li><strong>Error Handling:</strong> Comprehensive error detection for malformed syntax</li>
+      <li><strong>Output Formatting:</strong> Clean presentation of parsing results with status alignment</li>
+    </ul>
+    
+    <h2>Project Highlights</h2>
+    <ul>
+      <li><strong>Compiler Theory:</strong> Practical implementation of lexical analysis and parsing</li>
+      <li><strong>Language Design:</strong> Custom grammar definition for arithmetic expressions</li>
+      <li><strong>Tool Integration:</strong> Seamless Flex/Bison workflow for language processing</li>
+      <li><strong>Error Recovery:</strong> Robust error detection and reporting mechanisms</li>
+      <li><strong>Academic Foundation:</strong> Demonstrates core concepts in language processing</li>
+    </ul>
+    
+    <h2>Learning Outcomes</h2>
+    <p>This project demonstrates mastery of:</p>
+    <ul>
+      <li>Compiler theory and language processing concepts</li>
+      <li>Flex lexical analyzer development and token recognition</li>
+      <li>Bison parser generator and grammar implementation</li>
+      <li>BNF grammar design and syntax validation</li>
+      <li>Error handling and recovery in language processing</li>
+      <li>Build automation with makefiles for complex compilation</li>
+    </ul>
+    
+    <div style="text-align: center; margin-top: 2rem;">
+      <a href="https://github.com/Marlontino/Statement-Parser" target="_blank" class="github-button">View on GitHub</a>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Niko Perry</p>
+  </footer>
+</body>
+</html> 

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dining Seating System Project | Niko Perry</title>
+  <link rel="stylesheet" href="../../style.css">
+  <style>
+    .project-header {
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    
+    .project-content {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      color: #f39c12;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    
+    .project-image {
+      width: 100%;
+      max-width: 600px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+    
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .tech-tag {
+      background: #f39c12;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    
+    .github-button {
+      display: inline-block;
+      background: #333;
+      color: white;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-top: 1rem;
+      transition: background 0.3s ease;
+    }
+    
+    .github-button:hover {
+      background: #555;
+    }
+    
+    .code-block {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 5px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+    
+    .output-block {
+      background: #fff8e1;
+      border: 1px solid #ffcc02;
+      border-radius: 5px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="project-header">
+    <div class="project-content">
+      <a href="../../index.html" class="back-link">← Back to Portfolio</a>
+      <h1>Dining Seating System</h1>
+      <p>A multi-threaded producer-consumer system simulating restaurant seating management with robot concierges</p>
+    </div>
+  </div>
+
+  <div class="project-content">
+    <img src="https://via.placeholder.com/600x300/f39c12/ffffff?text=Dining+Seating+System" alt="Dining Seating System Project" class="project-image">
+    
+    <h2>Project Overview</h2>
+    <p>This project implements a sophisticated multi-threaded producer-consumer system that simulates a restaurant's seating management using robots. It demonstrates advanced concurrent programming concepts with thread-safe queue management and business rule enforcement.</p>
+    
+    <h2>Technologies Used</h2>
+    <div class="tech-stack">
+      <span class="tech-tag">C++</span>
+      <span class="tech-tag">Multi-threading</span>
+      <span class="tech-tag">POSIX Threads</span>
+      <span class="tech-tag">Producer-Consumer</span>
+      <span class="tech-tag">Thread Safety</span>
+      <span class="tech-tag">Mutex & Condition Variables</span>
+    </div>
+    
+    <h2>Key Features</h2>
+    <ul>
+      <li><strong>Producer Robots (Greeters):</strong> Generate table requests for General Tables and VIP Rooms</li>
+      <li><strong>Consumer Robots (Concierges):</strong> T-X and Rev 9 robots process seating requests</li>
+      <li><strong>Thread-Safe Queue:</strong> Mutex-protected queue with condition variables</li>
+      <li><strong>Business Rules:</strong> Maximum 18 total requests, maximum 6 VIP requests</li>
+      <li><strong>FIFO Processing:</strong> First In, First Out request handling</li>
+      <li><strong>Configurable Timing:</strong> Adjustable sleep times for all threads</li>
+    </ul>
+    
+    <h2>How It Works</h2>
+    <ol>
+      <li><strong>Producer Threads:</strong> Generate table requests with configurable timing</li>
+      <li><strong>Queue Management:</strong> Thread-safe queue enforces business constraints</li>
+      <li><strong>Consumer Threads:</strong> T-X and Rev 9 robots process requests from queue</li>
+      <li><strong>Business Rules:</strong> Monitor class enforces request limits and priorities</li>
+      <li><strong>Real-time Logging:</strong> Comprehensive logging of all operations</li>
+      <li><strong>Statistics Reporting:</strong> Final report shows production and consumption totals</li>
+    </ol>
+    
+    <h2>System Architecture</h2>
+    <h3>Producer Threads</h3>
+    <ul>
+      <li><strong>General Table Producer:</strong> Generates general table requests</li>
+      <li><strong>VIP Room Producer:</strong> Generates VIP room requests</li>
+      <li><strong>Rate Limiting:</strong> Configurable sleep times between requests</li>
+      <li><strong>Graceful Termination:</strong> Stops after reaching request limit</li>
+    </ul>
+    
+    <h3>Consumer Threads</h3>
+    <ul>
+      <li><strong>T-X Robot:</strong> Processes requests from the queue</li>
+      <li><strong>Rev 9 Robot:</strong> Processes requests from the queue</li>
+      <li><strong>FIFO Processing:</strong> Maintains request order</li>
+      <li><strong>Continuous Operation:</strong> Runs until all requests are processed</li>
+    </ul>
+    
+    <h2>Usage Example</h2>
+    <div class="code-block">
+# Compile the project<br>
+make clean && make<br><br>
+# Basic usage with 50 requests<br>
+./dineseating -s 50<br><br>
+# Advanced usage with custom timing<br>
+./dineseating -s 100 -g 50 -v 200 -x 75 -r 150<br><br>
+# Quick test with minimal requests<br>
+./dineseating -s 5
+    </div>
+    
+    <h2>Command Line Options</h2>
+    <ul>
+      <li><strong>-s &lt;number&gt;:</strong> Total number of seating requests (default: 100)</li>
+      <li><strong>-g &lt;milliseconds&gt;:</strong> General Table producer sleep time (default: 100ms)</li>
+      <li><strong>-v &lt;milliseconds&gt;:</strong> VIP Room producer sleep time (default: 100ms)</li>
+      <li><strong>-x &lt;milliseconds&gt;:</strong> T-X consumer sleep time (default: 100ms)</li>
+      <li><strong>-r &lt;milliseconds&gt;:</strong> Rev 9 consumer sleep time (default: 100ms)</li>
+    </ul>
+    
+    <h2>Sample Output</h2>
+    <div class="output-block">
+Request queue: 1 GT + 0 VIP = 1. Added General table request. Produced: 1 GT + 0 VIP = 1 in 0.000 s.<br>
+Request queue: 1 GT + 1 VIP = 2. Added VIP room request. Produced: 1 GT + 1 VIP = 2 in 0.001 s.<br>
+Request queue: 0 GT + 1 VIP = 1. T-X consumed General table request. T-X totals: 1 GT + 0 VIP = 1 consumed in 0.001 s.<br>
+Request queue: 0 GT + 0 VIP = 0. Rev 9 consumed VIP room request. Rev 9 totals: 0 GT + 1 VIP = 1 consumed in 0.002 s.<br><br>
+REQUEST REPORT<br>
+----------------------------------------<br>
+General table request producer generated 43 requests<br>
+VIP room request producer generated 7 requests<br>
+T-X consumed 22 GT + 3 VIP = 25 total<br>
+REV-9 consumed 21 GT + 4 VIP = 25 total<br>
+Elapsed time 0.267 s
+    </div>
+    
+    <h2>Technical Implementation</h2>
+    <h3>Monitor Class</h3>
+    <ul>
+      <li><strong>Thread-safe Queue:</strong> Mutex-protected queue with condition variables</li>
+      <li><strong>Business Rule Enforcement:</strong> Maximum 18 total requests, 6 VIP requests</li>
+      <li><strong>Bounds Checking:</strong> Prevents integer underflow and race conditions</li>
+      <li><strong>Graceful Termination:</strong> Proper cleanup of synchronization primitives</li>
+    </ul>
+    
+    <h3>Thread Synchronization</h3>
+    <ul>
+      <li><strong>Mutex Protection:</strong> Prevents race conditions in shared data structures</li>
+      <li><strong>Condition Variables:</strong> Efficient producer-consumer synchronization</li>
+      <li><strong>Memory Management:</strong> Automatic cleanup in destructors</li>
+      <li><strong>Error Handling:</strong> Comprehensive bounds checking and validation</li>
+    </ul>
+    
+    <h2>Business Rules</h2>
+    <ul>
+      <li><strong>Queue Limits:</strong> Maximum 18 unconsumed requests at any time</li>
+      <li><strong>VIP Constraints:</strong> Maximum 6 VIP room requests in queue</li>
+      <li><strong>Processing Order:</strong> FIFO (First In, First Out) request handling</li>
+      <li><strong>Request Types:</strong> General Table and VIP Room requests</li>
+      <li><strong>Consumer Robots:</strong> T-X and Rev 9 process requests concurrently</li>
+    </ul>
+    
+    <h2>Project Highlights</h2>
+    <ul>
+      <li><strong>Concurrent Programming:</strong> Advanced multi-threading with POSIX threads</li>
+      <li><strong>Producer-Consumer Pattern:</strong> Classic synchronization problem solution</li>
+      <li><strong>Thread Safety:</strong> Robust mutex and condition variable implementation</li>
+      <li><strong>Business Logic:</strong> Real-world constraints in concurrent systems</li>
+      <li><strong>Performance Optimization:</strong> Efficient queue management and processing</li>
+      <li><strong>Academic Excellence:</strong> Demonstrates advanced systems programming concepts</li>
+    </ul>
+    
+    <h2>Learning Outcomes</h2>
+    <p>This project demonstrates mastery of:</p>
+    <ul>
+      <li>Multi-threaded programming with POSIX threads</li>
+      <li>Producer-consumer pattern implementation</li>
+      <li>Thread synchronization using mutexes and condition variables</li>
+      <li>Business rule enforcement in concurrent systems</li>
+      <li>Memory management and resource cleanup</li>
+      <li>Real-time logging and statistics reporting</li>
+    </ul>
+    
+    <div style="text-align: center; margin-top: 2rem;">
+      <a href="https://github.com/Marlontino/Dining-Seating-System" target="_blank" class="github-button">View on GitHub</a>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Niko Perry</p>
+  </footer>
+</body>
+</html> 

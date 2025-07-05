@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Table Simulator Project | Niko Perry</title>
+  <link rel="stylesheet" href="../../style.css">
+  <style>
+    .project-header {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    
+    .project-content {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      color: #3498db;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    
+    .project-image {
+      width: 100%;
+      max-width: 600px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+    
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .tech-tag {
+      background: #2c3e50;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    
+    .github-button {
+      display: inline-block;
+      background: #333;
+      color: white;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-top: 1rem;
+      transition: background 0.3s ease;
+    }
+    
+    .github-button:hover {
+      background: #555;
+    }
+    
+    .code-block {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 5px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="project-header">
+    <div class="project-content">
+      <a href="../../index.html" class="back-link">← Back to Portfolio</a>
+      <h1>Page Table Simulator</h1>
+      <p>A C++ implementation of a multi-level page table simulator for memory access pattern analysis</p>
+    </div>
+  </div>
+
+  <div class="project-content">
+    <img src="https://via.placeholder.com/600x300/2c3e50/ffffff?text=Page+Table+Simulator" alt="Page Table Simulator Project" class="project-image">
+    
+    <h2>Project Overview</h2>
+    <p>This project implements a sophisticated multi-level page table simulator in C++ that processes memory address traces and analyzes page access patterns. It demonstrates advanced memory management concepts and efficient data structure design for virtual memory simulation.</p>
+    
+    <h2>Technologies Used</h2>
+    <div class="tech-stack">
+      <span class="tech-tag">C++</span>
+      <span class="tech-tag">Memory Management</span>
+      <span class="tech-tag">Data Structures</span>
+      <span class="tech-tag">Bit Operations</span>
+      <span class="tech-tag">File I/O</span>
+      <span class="tech-tag">Make</span>
+    </div>
+    
+    <h2>Key Features</h2>
+    <ul>
+      <li><strong>Multi-level Page Tables:</strong> Configurable number of levels with customizable bit distributions</li>
+      <li><strong>Memory Access Tracking:</strong> Counts and analyzes how frequently different pages are accessed</li>
+      <li><strong>Trace File Processing:</strong> Reads and processes large memory address trace files</li>
+      <li><strong>Efficient Bit Operations:</strong> Uses bitmasks for fast address extraction and page number calculation</li>
+      <li><strong>Memory-Safe Implementation:</strong> Proper memory management with destructors to prevent leaks</li>
+      <li><strong>Error Handling:</strong> Comprehensive validation for command line arguments and file operations</li>
+    </ul>
+    
+    <h2>How It Works</h2>
+    <ol>
+      <li><strong>Address Processing:</strong> Reads virtual memory addresses from trace files</li>
+      <li><strong>Bitmask Generation:</strong> Creates bitmasks for each page table level based on configuration</li>
+      <li><strong>Page Number Extraction:</strong> Uses bit operations to extract page numbers from addresses</li>
+      <li><strong>Hierarchical Traversal:</strong> Navigates through the multi-level page table structure</li>
+      <li><strong>Access Counting:</strong> Tracks how many times each page is accessed</li>
+      <li><strong>Output Generation:</strong> Produces detailed reports of memory access patterns</li>
+    </ol>
+    
+    <h2>Technical Implementation</h2>
+    <h3>Core Classes</h3>
+    <ul>
+      <li><strong>PageTable:</strong> Manages overall page table structure and bitmask operations</li>
+      <li><strong>Level:</strong> Represents individual levels in the hierarchy with child management</li>
+      <li><strong>TraceReader:</strong> Handles file I/O and trace processing</li>
+    </ul>
+    
+    <h3>Key Algorithms</h3>
+    <ul>
+      <li><strong>Address Extraction:</strong> Efficient bitmask and shift operations for page number calculation</li>
+      <li><strong>Level Traversal:</strong> Recursive navigation through the page table structure</li>
+      <li><strong>Memory Management:</strong> Automatic cleanup with destructors to prevent memory leaks</li>
+    </ul>
+    
+    <h2>Usage Example</h2>
+    <div class="code-block">
+# Compile the project<br>
+make clean && make<br><br>
+# Run with 2-level page table (10 bits each level)<br>
+./pagetrace trace.tr "10 10"<br><br>
+# Run with 3-level page table (8 bits each level)<br>
+./pagetrace trace.tr "8 8 8"
+    </div>
+    
+    <h2>Sample Output</h2>
+    <div class="code-block">
+0x161E8A20 -> page 0x1 0x61 0xE8 accessed 2089 times<br><br>
+0x0DE08598 -> page 0x0 0xDE 0x8 accessed 782 times<br><br>
+0x15D6B6D8 -> page 0x1 0x5D 0x6B accessed 405 times
+    </div>
+    
+    <h2>Project Highlights</h2>
+    <ul>
+      <li><strong>Academic Excellence:</strong> Part of CS480 coursework demonstrating advanced systems programming</li>
+      <li><strong>Performance Optimized:</strong> Efficient bit operations and minimal memory footprint</li>
+      <li><strong>Robust Error Handling:</strong> Comprehensive validation for all inputs and operations</li>
+      <li><strong>Scalable Design:</strong> Supports configurable page table levels and bit distributions</li>
+      <li><strong>Memory Safe:</strong> Proper cleanup prevents memory leaks in long-running simulations</li>
+    </ul>
+    
+    <h2>Learning Outcomes</h2>
+    <p>This project demonstrates mastery of:</p>
+    <ul>
+      <li>Advanced C++ programming concepts</li>
+      <li>Virtual memory and page table architectures</li>
+      <li>Efficient data structure design</li>
+      <li>Memory management and resource cleanup</li>
+      <li>File I/O and trace processing</li>
+      <li>Bit manipulation and optimization techniques</li>
+    </ul>
+    
+    <div style="text-align: center; margin-top: 2rem;">
+      <a href="https://github.com/Marlontino/Page-Table-Simulator" target="_blank" class="github-button">View on GitHub</a>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Niko Perry</p>
+  </footer>
+</body>
+</html> 
