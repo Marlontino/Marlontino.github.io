@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chess Game Project | Niko Perry</title>
+  <link rel="stylesheet" href="../../style.css">
+  <style>
+    .project-header {
+      background: linear-gradient(135deg, #34495e, #2ecc71);
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    .project-content {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      color: #2ecc71;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .project-image {
+      width: 100%;
+      max-width: 600px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .tech-tag {
+      background: #34495e;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    .github-button {
+      display: inline-block;
+      background: #333;
+      color: white;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-top: 1rem;
+      transition: background 0.3s ease;
+    }
+    .github-button:hover {
+      background: #555;
+    }
+    .code-block {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 5px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+    .feature-list {
+      columns: 2 300px;
+      -webkit-columns: 2 300px;
+      -moz-columns: 2 300px;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 700px) {
+      .feature-list {
+        columns: 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="project-header">
+    <div class="project-content">
+      <a href="../../index.html" class="back-link">← Back to Portfolio</a>
+      <h1>Chess Game</h1>
+      <p>A fully-featured chess game built with Python and Pygame, supporting Player vs Player and Player vs CPU with AI.</p>
+    </div>
+  </div>
+  <div class="project-content">
+    <img src="https://via.placeholder.com/600x300/34495e/ffffff?text=Chess+Game" alt="Chess Game Project" class="project-image">
+    <h2>Project Overview</h2>
+    <p>This project is a complete chess game built in Python using Pygame. It features both Player vs Player and Player vs CPU modes, a beautiful menu system, sound effects, multiple board themes, and a greedy AI opponent. The game implements all standard chess rules, including castling, en passant, pawn promotion, and check/checkmate detection.</p>
+    <h2>Technologies Used</h2>
+    <div class="tech-stack">
+      <span class="tech-tag">Python</span>
+      <span class="tech-tag">Pygame</span>
+      <span class="tech-tag">Game Development</span>
+      <span class="tech-tag">AI</span>
+      <span class="tech-tag">User Interface</span>
+    </div>
+    <h2>Key Features</h2>
+    <ul class="feature-list">
+      <li>Player vs Player and Player vs CPU modes</li>
+      <li>Greedy AI opponent</li>
+      <li>Full chess rules: move validation, check, checkmate, stalemate</li>
+      <li>Pawn promotion, en passant, castling</li>
+      <li>Sound effects for moves and captures</li>
+      <li>Multiple board themes (press 'T' to change)</li>
+      <li>Visual move indicators and last move highlighting</li>
+      <li>Beautiful menu system with hover effects</li>
+      <li>Drag and drop piece movement</li>
+      <li>Win condition detection and restart options</li>
+    </ul>
+    <h2>How to Play</h2>
+    <div class="code-block">
+# Clone the repository<br>
+$ git clone https://github.com/Marlontino/Chess.git<br>
+$ cd Chess<br><br>
+# (Optional) Create a virtual environment<br>
+$ python -m venv venv<br>
+$ source venv/bin/activate  # On Windows: venv\Scripts\activate<br><br>
+# Install dependencies<br>
+$ pip install -r requirements.txt<br><br>
+# Run the game<br>
+$ python src/main.py
+    </div>
+    <p style="color:#555; text-align:center; margin-bottom:2rem;">All images and screenshots are included in the <code>images/</code> folder inside the Chess project.</p>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin-bottom: 2rem;">
+      <figure style="margin:0;">
+        <img src="images/menu.png" alt="Chess Main Menu" style="max-width: 100%; width: 400px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <figcaption style="text-align:center; color:#555;">Main Menu</figcaption>
+      </figure>
+      <figure style="margin:0;">
+        <img src="images/board.png" alt="Chess Board" style="max-width: 100%; width: 400px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <figcaption style="text-align:center; color:#555;">Game Board</figcaption>
+      </figure>
+      <figure style="margin:0;">
+        <img src="images/help.png" alt="Chess Help Screen" style="max-width: 100%; width: 400px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <figcaption style="text-align:center; color:#555;">Help Screen</figcaption>
+      </figure>
+    </div>
+    <h2>Game Controls</h2>
+    <ul>
+      <li><strong>Mouse:</strong> Click and drag pieces to move</li>
+      <li><strong>T:</strong> Change board theme</li>
+      <li><strong>R:</strong> Restart current game</li>
+      <li><strong>M:</strong> Return to main menu</li>
+      <li><strong>Q:</strong> Quit application</li>
+    </ul>
+    <h2>AI Opponent</h2>
+    <p>The CPU opponent uses a greedy algorithm that evaluates all possible moves, considers piece values, and chooses the move that maximizes material advantage. The AI plays as black in PvC mode.</p>
+    <h2>Visual Features</h2>
+    <ul>
+      <li>Move highlighting and drag preview</li>
+      <li>Last move and hover effect indicators</li>
+      <li>Multiple board themes for visual variety</li>
+      <li>Sound effects for moves and captures</li>
+    </ul>
+    <h2>Project Highlights</h2>
+    <ul>
+      <li>Complete chess rules and move validation</li>
+      <li>Greedy AI for challenging CPU play</li>
+      <li>Beautiful, interactive user interface</li>
+      <li>Sound and visual feedback for enhanced experience</li>
+      <li>Modular codebase for easy future enhancements</li>
+    </ul>
+    <div style="text-align: center; margin-top: 2rem;">
+      <a href="https://github.com/Marlontino/Chess" target="_blank" class="github-button">View on GitHub</a>
+    </div>
+  </div>
+  <footer>
+    <p>&copy; 2025 Niko Perry</p>
+  </footer>
+</body>
+</html> 
