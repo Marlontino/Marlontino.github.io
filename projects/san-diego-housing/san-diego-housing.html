@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>San Diego Housing Market Analysis | Niko Perry</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .project-header {
+      background: linear-gradient(135deg, #1abc9c, #16a085);
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    
+    .project-content {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      color: #1abc9c;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    
+    .project-image {
+      width: 100%;
+      max-width: 800px;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      margin: 1rem 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .tech-tag {
+      background: #1abc9c;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    
+    .github-button {
+      display: inline-block;
+      background: #333;
+      color: white;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-top: 1rem;
+      transition: background 0.3s ease;
+    }
+    
+    .github-button:hover {
+      background: #555;
+    }
+
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .insight-card {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .insight-card h4 {
+      margin: 0;
+      color: #1abc9c;
+      font-size: 1.5rem;
+    }
+
+    .insight-card p {
+      margin: 0.5rem 0 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .image-gallery {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .gallery-item {
+      text-align: center;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .gallery-item p {
+      margin-top: 0.5rem;
+      color: #666;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="project-header">
+    <div class="project-content" style="background: transparent; box-shadow: none;">
+      <a href="../../index.html" class="back-link" style="color: white;">← Back to Portfolio</a>
+      <h1>San Diego Housing Market Analysis</h1>
+      <p>Comprehensive data analysis of the San Diego Airbnb market with predictive modeling and interactive visualizations</p>
+    </div>
+  </div>
+
+  <div class="project-content">
+    <img src="images/market_analysis_plots.png" alt="San Diego Market Analysis" class="project-image">
+    
+    <h2>Project Overview</h2>
+    <p>A comprehensive data analysis project examining the San Diego Airbnb market using advanced analytics, predictive modeling, and interactive visualizations. This project provides deep insights into pricing patterns, neighborhood analysis, and market trends to help understand the rental market dynamics.</p>
+    
+    <h2>Technologies Used</h2>
+    <div class="tech-stack">
+      <span class="tech-tag">Python</span>
+      <span class="tech-tag">Pandas</span>
+      <span class="tech-tag">NumPy</span>
+      <span class="tech-tag">Matplotlib</span>
+      <span class="tech-tag">Seaborn</span>
+      <span class="tech-tag">Folium</span>
+      <span class="tech-tag">scikit-learn</span>
+    </div>
+
+    <h2>Key Insights</h2>
+    <div class="insights-grid">
+      <div class="insight-card">
+        <h4>11,399</h4>
+        <p>Clean Listings Analyzed</p>
+      </div>
+      <div class="insight-card">
+        <h4>$304</h4>
+        <p>Average Nightly Price</p>
+      </div>
+      <div class="insight-card">
+        <h4>84.2%</h4>
+        <p>Entire Homes/Apartments</p>
+      </div>
+      <div class="insight-card">
+        <h4>68.8%</h4>
+        <p>Model R² Score</p>
+      </div>
+    </div>
+    
+    <h2>Features</h2>
+    <ul>
+      <li><strong>Data Cleaning:</strong> Automatic outlier removal and data quality checks</li>
+      <li><strong>Price Analysis:</strong> Statistical analysis with clean vs. original data comparisons</li>
+      <li><strong>Neighborhood Insights:</strong> Top neighborhoods by listings, pricing, and value scores</li>
+      <li><strong>Market Composition:</strong> Room type distribution and pricing analysis</li>
+      <li><strong>Predictive Modeling:</strong> Random Forest regression with feature importance analysis</li>
+      <li><strong>Interactive Maps:</strong> Geographic heatmaps and clickable neighborhood markers</li>
+    </ul>
+
+    <h2>Top Neighborhoods</h2>
+    <ol>
+      <li><strong>Mission Bay:</strong> 1,620 listings, Avg: $493/night</li>
+      <li><strong>Pacific Beach:</strong> 1,008 listings, Avg: $357/night</li>
+      <li><strong>La Jolla:</strong> 832 listings, Avg: $513/night</li>
+      <li><strong>Ocean Beach:</strong> 586 listings, Avg: $284/night</li>
+      <li><strong>North Hills:</strong> 487 listings, Avg: $191/night</li>
+    </ol>
+
+    <h2>Visualizations</h2>
+    <div class="image-gallery">
+      <div class="gallery-item">
+        <img src="images/price_analysis_plots.png" alt="Price Analysis">
+        <p>Price distribution, correlation, and trend analysis</p>
+      </div>
+      <div class="gallery-item">
+        <img src="images/heatmap.png" alt="Price Heatmap">
+        <p>Geographic price distribution across San Diego</p>
+      </div>
+      <div class="gallery-item">
+        <img src="images/neighborhood_map.png" alt="Neighborhood Map">
+        <p>Interactive neighborhood markers with details</p>
+      </div>
+    </div>
+
+    <h2>Model Performance</h2>
+    <ul>
+      <li><strong>Basic Model:</strong> MAE $87.50, R² 0.674</li>
+      <li><strong>Full Model:</strong> MAE $85.28, R² 0.688</li>
+      <li><strong>Accuracy within $20:</strong> 29.5%</li>
+      <li><strong>Top Features:</strong> bedrooms, bathrooms, availability_365</li>
+    </ul>
+
+    <h2>Business Recommendations</h2>
+    <ol>
+      <li>Target entire homes/apartments for maximum revenue potential</li>
+      <li>Price competitively ($200-400 range) to drive bookings and reviews</li>
+      <li>Focus on properties that accommodate 4+ guests</li>
+      <li>Consider year-round availability for premium pricing</li>
+      <li>Target neighborhoods with high ratings but moderate prices</li>
+    </ol>
+    
+    <div style="text-align: center; margin-top: 2rem;">
+      <a href="https://github.com/Marlontino/san-diego-housing" target="_blank" class="github-button">View on GitHub</a>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Niko Perry</p>
+  </footer>
+</body>
+</html>
