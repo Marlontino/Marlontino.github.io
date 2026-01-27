@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Analyzer | Niko Perry</title>
+  <link rel="stylesheet" href="../../style.css">
+  <style>
+    .project-header {
+      background: linear-gradient(135deg, #1abc9c, #16a085);
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    .project-content {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      color: #1abc9c;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .project-image {
+      width: 100%;
+      max-width: 600px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .tech-tag {
+      background: #1abc9c;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    .github-button {
+      display: inline-block;
+      background: #333;
+      color: white;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-top: 1rem;
+      transition: background 0.3s ease;
+    }
+    .github-button:hover {
+      background: #555;
+    }
+    .code-block {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 5px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+    .output-block {
+      background: #e8f8f5;
+      border: 1px solid #a3e4d7;
+      border-radius: 5px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="project-header">
+    <div class="project-content">
+      <a href="../../index.html" class="back-link">← Back to Portfolio</a>
+      <h1>Stock Analyzer</h1>
+      <p>A comprehensive stock market analysis and trading system with momentum analysis, volatility detection, and ML-based signals</p>
+    </div>
+  </div>
+
+  <div class="project-content">
+    <img src="https://via.placeholder.com/600x300/1abc9c/ffffff?text=Stock+Analyzer" alt="Stock Analyzer Project" class="project-image">
+    
+    <h2>Project Overview</h2>
+    <p>A comprehensive stock market analysis and trading system that provides momentum analysis, volatility detection, sector rotation insights, and machine learning-based trading signals. This project demonstrates advanced data analysis, financial modeling, and machine learning skills applied to real-world market data.</p>
+    
+    <h2>Technologies Used</h2>
+    <div class="tech-stack">
+      <span class="tech-tag">Python</span>
+      <span class="tech-tag">Machine Learning</span>
+      <span class="tech-tag">Pandas</span>
+      <span class="tech-tag">SQLite</span>
+      <span class="tech-tag">yfinance</span>
+      <span class="tech-tag">scikit-learn</span>
+      <span class="tech-tag">Financial Analysis</span>
+    </div>
+    
+    <h2>Key Features</h2>
+    <ul>
+      <li><strong>Momentum Analysis:</strong> Identify stocks with strong price momentum and risk-adjusted returns (Sharpe ratio)</li>
+      <li><strong>Volatility Detection:</strong> Find stocks with unusual volatility patterns (breakouts/consolidation)</li>
+      <li><strong>Pairs Trading:</strong> Sector-specific pairs trading opportunities with correlation analysis</li>
+      <li><strong>Sector Rotation:</strong> Comprehensive sector performance analysis across all 11 S&P 500 sectors</li>
+      <li><strong>ML Signals:</strong> Machine learning-based buy/sell/hold signals using voting classifiers</li>
+      <li><strong>CLI Interface:</strong> Easy-to-use command-line interface for all operations</li>
+    </ul>
+    
+    <h2>How It Works</h2>
+    <ol>
+      <li><strong>Data Collection:</strong> Fetches stock data from Yahoo Finance via yfinance</li>
+      <li><strong>Data Storage:</strong> Stores data in SQLite database for efficient querying</li>
+      <li><strong>Analysis Pipeline:</strong> Runs momentum, volatility, pairs, and sector analyses</li>
+      <li><strong>ML Predictions:</strong> Generates buy/sell/hold signals using ensemble classifiers</li>
+      <li><strong>Reporting:</strong> Outputs actionable insights for investment decisions</li>
+    </ol>
+    
+    <h2>Installation & Usage</h2>
+    <div class="code-block">
+# Clone the repository<br>
+$ git clone https://github.com/Marlontino/Stock-Analyzer.git<br>
+$ cd stock-analyzer<br><br>
+# Create virtual environment (Python 3.10+ required)<br>
+$ python3 -m venv venv<br>
+$ source venv/bin/activate<br><br>
+# Install dependencies<br>
+$ pip install -r requirements.txt<br><br>
+# Run all analyses<br>
+$ ./stock-analyzer analyze
+    </div>
+    
+    <h2>CLI Commands</h2>
+    <div class="code-block">
+# Check database status<br>
+$ ./stock-analyzer status<br><br>
+# Update all S&P 500 stock data<br>
+$ ./stock-analyzer update<br><br>
+# Run specific analysis<br>
+$ ./stock-analyzer analyze momentum<br>
+$ ./stock-analyzer analyze volatility<br>
+$ ./stock-analyzer analyze pairs<br>
+$ ./stock-analyzer analyze sectors<br>
+$ ./stock-analyzer analyze ml
+    </div>
+    
+    <h2>Sample Output</h2>
+    <h3>Momentum Analysis</h3>
+    <div class="output-block">
+📈 TOP MOMENTUM STOCKS<br>
+GOOGL: 4.32% momentum, Sharpe: 3.57<br>
+NVDA: 0.23% momentum, Sharpe: 0.09
+    </div>
+    
+    <h3>Volatility Analysis</h3>
+    <div class="output-block">
+🔥 HIGHEST VOLATILITY RATIOS:<br>
+MSFT: HIGH_VOL (ratio: 1.64x average)<br>
+AAPL: HIGH_VOL (ratio: 1.62x average)
+    </div>
+    
+    <h3>Pairs Trading</h3>
+    <div class="output-block">
+🔗 PAIRS TRADING OPPORTUNITIES:<br>
+1. Industrials - GNRC-IEX<br>
+   Signal: BUY_IEX_SELL_GNRC<br>
+   Z-score: 3.94 | Correlation: 0.80
+    </div>
+    
+    <h2>Project Structure</h2>
+    <ul>
+      <li><strong>data/</strong> - Database management and data fetching modules</li>
+      <li><strong>analysis/</strong> - Momentum, volatility, pairs trading, sector rotation, ML signals</li>
+      <li><strong>config/</strong> - Settings, thresholds, and S&P 500 sector definitions</li>
+      <li><strong>services/</strong> - Scheduler and update orchestration</li>
+      <li><strong>notebooks/</strong> - Jupyter notebooks for exploration</li>
+    </ul>
+    
+    <h2>Skills Demonstrated</h2>
+    <ul>
+      <li>Financial data analysis and quantitative modeling</li>
+      <li>Machine learning for trading signal generation</li>
+      <li>API integration with financial data sources</li>
+      <li>Database design and management with SQLite</li>
+      <li>CLI application development</li>
+      <li>Statistical analysis (correlation, z-scores, Sharpe ratio)</li>
+    </ul>
+    
+    <h2>Project Highlights</h2>
+    <ul>
+      <li><strong>Real-World Application:</strong> Analyzes actual S&P 500 stock data</li>
+      <li><strong>Machine Learning:</strong> Voting classifier ensemble for trading signals</li>
+      <li><strong>Comprehensive Analysis:</strong> Multiple analysis types in one tool</li>
+      <li><strong>Professional CLI:</strong> Production-ready command-line interface</li>
+      <li><strong>Extensible Design:</strong> Modular architecture for easy enhancements</li>
+    </ul>
+    
+    <div style="text-align: center; margin-top: 2rem;">
+      <a href="https://github.com/Marlontino/Stock-Analyzer" target="_blank" class="github-button">View on GitHub</a>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Niko Perry</p>
+  </footer>
+</body>
+</html>
