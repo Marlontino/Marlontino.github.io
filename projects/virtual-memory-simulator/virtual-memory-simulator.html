@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Memory Simulator | Niko Perry</title>
+  <link rel="stylesheet" href="../../style.css">
+  <style>
+    .project-header {
+      background: linear-gradient(135deg, #9b59b6, #8e44ad);
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    
+    .project-content {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      color: #9b59b6;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    
+    .project-image {
+      width: 100%;
+      max-width: 600px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+    
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .tech-tag {
+      background: #9b59b6;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    
+    .github-button {
+      display: inline-block;
+      background: #333;
+      color: white;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-top: 1rem;
+      transition: background 0.3s ease;
+    }
+    
+    .github-button:hover {
+      background: #555;
+    }
+    
+    .code-block {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 5px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+    
+    .output-block {
+      background: #f8f4ff;
+      border: 1px solid #d6b3ff;
+      border-radius: 5px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+    
+    .diagram-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.7rem;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.4;
+    }
+    
+    .bitmask-visual {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.6;
+    }
+    
+    .hit-rate-box {
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+    
+    .hit-rate-box .big-number {
+      font-size: 3rem;
+      font-weight: bold;
+    }
+    
+    .hit-rate-box .label {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    
+    .stat-card {
+      background: #f8f4ff;
+      border: 1px solid #d6b3ff;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    .stat-card .number {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #9b59b6;
+    }
+    
+    .stat-card .label {
+      font-size: 0.85rem;
+      color: #666;
+    }
+    
+    .project-image-full {
+      width: 100%;
+      max-width: 700px;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      margin: 1rem auto;
+      display: block;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>
+  <div class="project-header">
+    <div class="project-content">
+      <a href="../../index.html" class="back-link">← Back to Portfolio</a>
+      <h1>Virtual Memory Simulator</h1>
+      <p>A multi-level page table simulation with TLB support for virtual memory management</p>
+    </div>
+  </div>
+
+  <div class="project-content">
+    <img src="images/summary.png" alt="Demand Paging Cache Summary Output" class="project-image-full">
+    
+    <div class="hit-rate-box">
+      <div class="big-number">97.82%</div>
+      <div class="label">Page Table Hit Rate</div>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="number">224,449</div>
+        <div class="label">Addresses Processed</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">219,561</div>
+        <div class="label">Page Hits</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">4,888</div>
+        <div class="label">Frames Allocated</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">6,182</div>
+        <div class="label">Page Table Entries</div>
+      </div>
+    </div>
+    
+    <h2>Project Overview</h2>
+    <p>This project implements a sophisticated virtual memory management system with multi-level page tables and an address translation cache (TLB). It simulates demand paging with configurable page table levels, comprehensive logging modes, and advanced memory management techniques.</p>
+    
+    <h2>Technologies Used</h2>
+    <div class="tech-stack">
+      <span class="tech-tag">C++</span>
+      <span class="tech-tag">Virtual Memory</span>
+      <span class="tech-tag">Page Tables</span>
+      <span class="tech-tag">TLB Cache</span>
+      <span class="tech-tag">Memory Management</span>
+      <span class="tech-tag">Address Translation</span>
+    </div>
+    
+    <h2>Key Features</h2>
+    <ul>
+      <li><strong>Multi-level Page Tables:</strong> Configurable hierarchical page table structure</li>
+      <li><strong>Address Translation Cache (TLB):</strong> LRU-based cache with hit/miss detection</li>
+      <li><strong>Virtual to Physical Translation:</strong> Complete address translation pipeline</li>
+      <li><strong>Comprehensive Logging:</strong> Six different analysis modes for debugging</li>
+      <li><strong>Memory Management:</strong> Proper allocation and cleanup of page table structures</li>
+      <li><strong>Performance Analysis:</strong> Hit/miss statistics and performance metrics</li>
+    </ul>
+    
+    <h2>How It Works</h2>
+    <ol>
+      <li><strong>Address Processing:</strong> Reads virtual addresses from trace files</li>
+      <li><strong>TLB Lookup:</strong> Checks address translation cache for VPN mapping</li>
+      <li><strong>Page Table Walk:</strong> Traverses multi-level page table hierarchy</li>
+      <li><strong>Address Translation:</strong> Converts virtual addresses to physical addresses</li>
+      <li><strong>Cache Management:</strong> Updates TLB with LRU replacement policy</li>
+      <li><strong>Statistics Collection:</strong> Tracks hit rates and performance metrics</li>
+    </ol>
+    
+    <h2>Address Translation Diagram</h2>
+    <p>How a virtual address is broken down and translated:</p>
+    <pre class="diagram-block">Virtual Address: 0x0041F760
+
+┌────────────┬────────────┬────────────┬──────────┐
+│  Level 0   │  Level 1   │  Level 2   │  Offset  │
+│   0x00     │   0x41     │   0xF7     │   0x60   │
+│  (8 bits)  │  (8 bits)  │  (8 bits)  │ (8 bits) │
+└────────────┴────────────┴────────────┴──────────┘
+      │            │            │            │
+      │            │            │            │
+      ▼            ▼            ▼            │
+┌──────────┐ ┌──────────┐ ┌──────────┐       │
+│ Level 0  │→│ Level 1  │→│ Level 2  │       │
+│Page Table│ │Page Table│ │Page Table│       │
+└──────────┘ └──────────┘ └────┬─────┘       │
+                               │             │
+                               ▼             │
+                          ┌─────────┐        │
+                          │   PFN   │        │
+                          │  0x000  │        │
+                          └────┬────┘        │
+                               │             │
+                               └──────┬──────┘
+                                      │
+                                      ▼
+                         Physical Address: 0x00000060</pre>
+
+    <h2>TLB/Cache Operation Flowchart</h2>
+    <p>The decision process for address translation with caching:</p>
+    <pre class="diagram-block">                    ┌─────────────────────┐
+                    │  Virtual Address    │
+                    │     Received        │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │  Extract VPN from   │
+                    │  Virtual Address    │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   Check TLB for     │
+                    │   VPN → PFN mapping │
+                    └──────────┬──────────┘
+                               │
+              ┌────────────────┴────────────────┐
+              │                                 │
+              ▼                                 ▼
+     ┌────────────────┐                ┌────────────────┐
+     │   TLB HIT!     │                │   TLB MISS     │
+     │ Return cached  │                │                │
+     │     PFN        │                └───────┬────────┘
+     └───────┬────────┘                        │
+             │                                 ▼
+             │                      ┌─────────────────────┐
+             │                      │  Page Table Walk    │
+             │                      │  Level 0 → 1 → 2    │
+             │                      └──────────┬──────────┘
+             │                                 │
+             │                                 ▼
+             │                      ┌─────────────────────┐
+             │                      │  Get PFN from       │
+             │                      │  leaf page table    │
+             │                      └──────────┬──────────┘
+             │                                 │
+             │                                 ▼
+             │                      ┌─────────────────────┐
+             │                      │  Update TLB with    │
+             │                      │  new VPN → PFN      │
+             │                      │  (LRU replacement)  │
+             │                      └──────────┬──────────┘
+             │                                 │
+             └────────────────┬────────────────┘
+                              │
+                              ▼
+                    ┌─────────────────────┐
+                    │  Combine PFN with   │
+                    │  Offset to get      │
+                    │  Physical Address   │
+                    └─────────────────────┘</pre>
+
+    <h2>Bitmask Visualization</h2>
+    <p>How bitmasks extract page numbers from each level:</p>
+    <pre class="bitmask-visual">Address:  0x0041F760  =  00000000 01000001 11110111 01100000
+
+Level 0:  FF000000     =  ████████ ░░░░░░░░ ░░░░░░░░ ░░░░░░░░
+          AND Result   →  00000000 = 0x00
+
+Level 1:  00FF0000     =  ░░░░░░░░ ████████ ░░░░░░░░ ░░░░░░░░
+          AND Result   →  01000001 = 0x41
+
+Level 2:  0000FF00     =  ░░░░░░░░ ░░░░░░░░ ████████ ░░░░░░░░
+          AND Result   →  11110111 = 0xF7
+
+Offset:   000000FF     =  ░░░░░░░░ ░░░░░░░░ ░░░░░░░░ ████████
+          AND Result   →  01100000 = 0x60
+
+████ = Bits extracted    ░░░░ = Bits masked out</pre>
+
+    <h2>Multi-Level Page Table Structure</h2>
+    <p>The hierarchical page table with demand paging:</p>
+    <pre class="diagram-block">                         ┌─────────────────┐
+                         │   Root (L0)     │
+                         │   Page Table    │
+                         │   256 entries   │
+                         └────────┬────────┘
+                                  │
+          ┌───────────────────────┼───────────────────────┐
+          │                       │                       │
+          ▼                       ▼                       ▼
+    ┌───────────┐           ┌───────────┐           ┌───────────┐
+    │  L1[0x00] │           │  L1[0x41] │           │  L1[...]  │
+    │  (sparse) │           │ 256 entries│          │  (NULL)   │
+    └─────┬─────┘           └─────┬─────┘           └───────────┘
+          │                       │                  Demand Paging:
+    ┌─────┴─────┐           ┌─────┴─────┐           Only allocated
+    ▼           ▼           ▼           ▼           when accessed!
+┌───────┐   ┌───────┐   ┌───────┐   ┌───────┐
+│L2[...]│   │L2[...]│   │L2[0xF7]│  │L2[...]│
+│ NULL  │   │ NULL  │   │Map Ent│   │ NULL  │
+└───────┘   └───────┘   └───┬───┘   └───────┘
+                            │
+                            ▼
+                      ┌───────────┐
+                      │  PFN: 0   │
+                      │  Valid: 1 │
+                      └───────────┘</pre>
+    
+    <h2>System Architecture</h2>
+    <h3>Page Table Structure</h3>
+    <ul>
+      <li><strong>Level 0:</strong> Top-level page table (typically 8 bits)</li>
+      <li><strong>Level 1:</strong> Middle-level page table (typically 8 bits)</li>
+      <li><strong>Level 2:</strong> Bottom-level page table (typically 8 bits)</li>
+      <li><strong>Bitmasks:</strong> Level-specific masks for address extraction</li>
+      <li><strong>Shift Values:</strong> Proper alignment for address components</li>
+    </ul>
+    
+    <h3>Address Translation Cache (TLB)</h3>
+    <ul>
+      <li><strong>Configurable Capacity:</strong> Adjustable cache size</li>
+      <li><strong>LRU Replacement:</strong> Least Recently Used eviction policy</li>
+      <li><strong>Hit/Miss Detection:</strong> Comprehensive cache performance tracking</li>
+      <li><strong>VPN to PFN Mapping:</strong> Virtual to Physical frame number translation</li>
+    </ul>
+    
+    <h2>Usage Example</h2>
+    <div class="code-block">
+# Compile the project<br>
+make<br><br>
+# Show bitmasks for 3-level page table<br>
+./pagingwithatc -o bitmasks trace.tr 8 8 8<br><br>
+# Generate summary statistics<br>
+./pagingwithatc -o summary trace.tr 8 8 8<br><br>
+# Virtual to physical address translation<br>
+./pagingwithatc -o va2pa -n 5 trace.tr 8 8 8
+    </div>
+    
+    <h2>Logging Modes</h2>
+    <p>The program supports six different output modes for comprehensive analysis:</p>
+    
+    <h3>Bitmasks Mode</h3>
+    <p>Displays bitmasks for each page table level:</p>
+    <img src="images/bitmasks.png" alt="Bitmasks Output" class="project-image-full">
+    
+    <h3>VA to PA Translation</h3>
+    <p>Virtual to physical address translation:</p>
+    <img src="images/va2pa.png" alt="VA to PA Output" class="project-image-full">
+    
+    <h3>VPN to PFN Mapping</h3>
+    <p>Virtual Page Number to Physical Frame Number mapping:</p>
+    <img src="images/vpn2pfn.png" alt="VPN to PFN Output" class="project-image-full">
+    
+    <h3>VA to PA with ATC and Page Table Walk</h3>
+    <p>Translation showing TLB hits/misses and page table walk details:</p>
+    <img src="images/va2pa_atc_ptwalk.png" alt="VA to PA with ATC and PT Walk" class="project-image-full">
+    
+    <h3>Cache VA to PA with ATC and Page Table Walk</h3>
+    <p>Translation with cache performance details:</p>
+    <img src="images/cache_va2pa_atc_ptwalk.png" alt="Cache VA to PA with ATC and PT Walk" class="project-image-full">
+    
+    <h2>Technical Implementation</h2>
+    <h3>Core Components</h3>
+    <ul>
+      <li><strong>pageTableLevel.cpp:</strong> Multi-level page table implementation</li>
+      <li><strong>map.cpp:</strong> Page table entry and mapping management</li>
+      <li><strong>tracereader.cpp:</strong> Memory access trace file processing</li>
+      <li><strong>main.cpp:</strong> Program entry point and mode management</li>
+    </ul>
+    
+    <h3>Address Translation Process</h3>
+    <ol>
+      <li><strong>Virtual Address Input:</strong> 32-bit virtual address from trace file</li>
+      <li><strong>TLB Lookup:</strong> Check cache for existing VPN to PFN mapping</li>
+      <li><strong>Page Table Walk:</strong> Traverse hierarchical page table structure</li>
+      <li><strong>Physical Address Calculation:</strong> Combine PFN with offset</li>
+      <li><strong>Cache Update:</strong> Update TLB with new mapping using LRU</li>
+    </ol>
+    
+    <h2>Performance Features</h2>
+    <ul>
+      <li><strong>High Hit Rates:</strong> Achieves 97.82% hit rate in simulations</li>
+      <li><strong>Efficient Memory Usage:</strong> Dynamic allocation with proper cleanup</li>
+      <li><strong>Configurable Architecture:</strong> Adjustable page table levels and bit distributions</li>
+      <li><strong>Comprehensive Analysis:</strong> Six different logging modes for detailed analysis</li>
+      <li><strong>Large Dataset Support:</strong> Processes over 200,000 addresses efficiently</li>
+    </ul>
+    
+    <h2>Project Highlights</h2>
+    <ul>
+      <li><strong>Computer Architecture:</strong> Practical implementation of virtual memory concepts</li>
+      <li><strong>Memory Management:</strong> Advanced page table and TLB implementation</li>
+      <li><strong>Performance Optimization:</strong> Efficient address translation with caching</li>
+      <li><strong>Comprehensive Analysis:</strong> Multiple logging modes for detailed debugging</li>
+      <li><strong>Scalable Design:</strong> Configurable architecture for different scenarios</li>
+      <li><strong>Academic Excellence:</strong> Demonstrates advanced computer architecture concepts</li>
+    </ul>
+    
+    <h2>Learning Outcomes</h2>
+    <p>This project demonstrates mastery of:</p>
+    <ul>
+      <li>Virtual memory management and page table design</li>
+      <li>Address translation cache (TLB) implementation</li>
+      <li>Multi-level page table traversal and management</li>
+      <li>Memory management and dynamic allocation</li>
+      <li>Performance analysis and optimization techniques</li>
+      <li>Computer architecture and memory hierarchy concepts</li>
+    </ul>
+    
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Niko Perry</p>
+  </footer>
+</body>
+</html> 
