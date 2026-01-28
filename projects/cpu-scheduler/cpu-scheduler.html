@@ -95,6 +95,64 @@
       font-family: 'Courier New', monospace;
       font-size: 0.9rem;
     }
+    
+    .diagram-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.7rem;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.4;
+    }
+    
+    .gantt-chart {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.6;
+    }
+    
+    .gantt-chart .cpu {
+      background: #e74c3c;
+      color: white;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    
+    .gantt-chart .io {
+      background: #3498db;
+      color: white;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    
+    .gantt-chart .wait {
+      background: #95a5a6;
+      color: white;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    
+    .project-image-full {
+      width: 100%;
+      max-width: 700px;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      margin: 1rem auto;
+      display: block;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
   </style>
 </head>
 <body>
@@ -107,7 +165,7 @@
   </div>
 
   <div class="project-content">
-    <img src="https://via.placeholder.com/600x300/e74c3c/ffffff?text=CPU+Scheduler" alt="CPU Scheduler Project" class="project-image">
+    <img src="images/schedule.png" alt="CPU Scheduler Terminal Output" class="project-image-full">
     
     <h2>Project Overview</h2>
     <p>This project implements a sophisticated CPU scheduler simulator that manages processes with alternating CPU and I/O bursts using the Shortest Job Next (SJN) algorithm. It features multi-threaded execution, exponential averaging for burst time estimation, and comprehensive process management.</p>
@@ -141,6 +199,136 @@
       <li><strong>Burst Estimation:</strong> Optional exponential averaging for future burst prediction</li>
       <li><strong>Performance Tracking:</strong> Monitors turnaround time, wait time, and completion status</li>
     </ol>
+    
+    <h2>Architecture Diagram</h2>
+    <p>How the project components interact:</p>
+    <pre class="diagram-block">┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  main.cpp   │────▶│ scheduler.cpp│────▶│   log.cpp   │
+│  (entry)    │     │  (SJN algo)  │     │  (output)   │
+└─────────────┘     └──────────────┘     └─────────────┘
+      │                   │
+      ▼                   ▼
+┌─────────────┐     ┌─────────────────────────────────┐
+│ process.cpp │     │            Queues               │
+│ (load data) │     │  ┌───────────┐ ┌─────────────┐  │
+└─────────────┘     │  │Ready Queue│ │Blocked Queue│  │
+                    │  │  (sorted) │ │   (I/O)     │  │
+                    │  └───────────┘ └─────────────┘  │
+                    └─────────────────────────────────┘</pre>
+
+    <h2>Process Timeline (Gantt Chart)</h2>
+    <p>Example showing how processes are scheduled over time:</p>
+    <pre class="gantt-chart">Time:   0    3    8    12        18   21   24        30
+        |----|----|----|----|----|----|----|----|----|----|
+
+P1:     <span class="cpu">[CPU 3]</span>         <span class="io">[  I/O 8  ]</span>    <span class="cpu">[CPU 3]</span><span class="io">[I/O 1]</span><span class="cpu">[CPU 6]</span>
+
+P2:          <span class="cpu">[CPU 5]</span><span class="io">[I/O 2]</span>         <span class="cpu">[CPU 3]</span>  ✓ Done (t=18)
+
+P0:               <span class="wait">[wait]</span><span class="cpu">[CPU 4]</span><span class="io">[ I/O 7 ]</span>      <span class="cpu">[CPU 6]</span>  ✓ Done (t=30)
+
+Legend: <span class="cpu">CPU</span> = Running  <span class="io">I/O</span> = Blocked  <span class="wait">wait</span> = Ready Queue</pre>
+
+    <h2>State Transition Diagram</h2>
+    <p>How processes move between states:</p>
+    <pre class="diagram-block">                    ┌─────────────────────────────────────┐
+                    │                                     │
+                    ▼                                     │
+              ┌──────────┐                                │
+   New ──────▶│  READY   │◀────────────────────┐          │
+   Process    │  QUEUE   │                     │          │
+              │ (sorted  │                     │          │
+              │  by SJN) │                     │          │
+              └────┬─────┘                     │          │
+                   │                           │          │
+                   │ Select shortest           │          │
+                   │ CPU burst                 │          │
+                   ▼                           │          │
+              ┌──────────┐              ┌──────┴─────┐    │
+              │ RUNNING  │──I/O Burst──▶│  BLOCKED   │    │
+              │  (CPU)   │              │  (I/O)     │    │
+              └────┬─────┘              └──────┬─────┘    │
+                   │                           │          │
+                   │ CPU Burst                 │ I/O      │
+                   │ Complete                  │ Complete │
+                   ▼                           │          │
+              ┌──────────┐                     │          │
+              │COMPLETED │◀────────────────────┘          │
+              │          │     (if no more bursts)        │
+              └──────────┘                                │
+                                                          │
+                   └──────────────────────────────────────┘
+                         (if more CPU bursts remain)</pre>
+
+    <h2>SJN Algorithm Flowchart</h2>
+    <p>The decision process for Shortest Job Next scheduling:</p>
+    <pre class="diagram-block">                    ┌─────────────────┐
+                    │      START      │
+                    └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │  Load processes │
+                    │  from file      │
+                    └────────┬────────┘
+                             │
+                             ▼
+               ┌─────────────────────────────┐
+               │  Sort ready queue by        │
+               │  shortest CPU burst time    │
+               │  (or estimated if using EA) │
+               └─────────────┬───────────────┘
+                             │
+                             ▼
+                    ┌────────────────┐     No
+                    │ Ready queue    │──────────┐
+                    │ empty?         │          │
+                    └───────┬────────┘          │
+                            │ Yes               │
+                            ▼                   │
+                    ┌────────────────┐          │
+                    │  Check blocked │          │
+                    │  queue         │          │
+                    └───────┬────────┘          │
+                            │                   │
+              ┌─────────────┴─────────────┐     │
+              │                           │     │
+              ▼                           ▼     │
+     ┌────────────────┐          ┌────────────────┐
+     │ All processes  │          │ Move completed │
+     │ completed?     │          │ I/O to ready   │
+     └───────┬────────┘          └───────┬────────┘
+             │                           │
+             │ Yes                       └───────┐
+             ▼                                   │
+     ┌────────────────┐                          │
+     │  Print stats   │                          │
+     │  EXIT          │                          │
+     └────────────────┘                          │
+                                                 │
+              ┌──────────────────────────────────┘
+              │
+              ▼
+     ┌─────────────────┐
+     │ Execute front   │
+     │ process (CPU)   │
+     └────────┬────────┘
+              │
+              ▼
+     ┌─────────────────┐     Yes    ┌─────────────────┐
+     │ Has I/O burst?  │───────────▶│ Move to blocked │
+     └────────┬────────┘            │ queue           │
+              │ No                  └────────┬────────┘
+              ▼                              │
+     ┌─────────────────┐                     │
+     │ Mark process    │                     │
+     │ COMPLETED       │                     │
+     └────────┬────────┘                     │
+              │                              │
+              └──────────────┬───────────────┘
+                             │
+                             ▼
+                    (Loop back to sort)</pre>
     
     <h2>Scheduling Algorithm</h2>
     <h3>Shortest Job Next (SJN)</h3>
@@ -231,13 +419,10 @@ P0: turnaround time = 30, wait time = 13
       <li>Thread synchronization and busy waiting techniques</li>
     </ul>
     
-    <div style="text-align: center; margin-top: 2rem;">
-      <a href="https://github.com/Marlontino/CPU-Scheduler" target="_blank" class="github-button">View on GitHub</a>
-    </div>
   </div>
 
   <footer>
-    <p>&copy; 2025 Niko Perry</p>
+    <p>&copy; 2026 Niko Perry</p>
   </footer>
 </body>
 </html> 
