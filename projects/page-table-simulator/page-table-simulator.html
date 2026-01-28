@@ -85,6 +85,48 @@
       font-size: 0.9rem;
       overflow-x: auto;
     }
+    
+    .diagram-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.4;
+    }
+    
+    .diagram-block .highlight {
+      color: #4ec9b0;
+    }
+    
+    .diagram-block .comment {
+      color: #6a9955;
+    }
+    
+    .image-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      justify-content: center;
+    }
+    
+    .image-gallery img {
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    
+    .image-caption {
+      text-align: center;
+      font-style: italic;
+      color: #666;
+      margin-top: 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -97,7 +139,10 @@
   </div>
 
   <div class="project-content">
-    <img src="https://via.placeholder.com/600x300/2c3e50/ffffff?text=Page+Table+Simulator" alt="Page Table Simulator Project" class="project-image">
+    <div class="image-gallery">
+      <img src="images/888.png" alt="Page Table Simulator - 8-8-8 Configuration">
+      <img src="images/1210.png" alt="Page Table Simulator - 12-10 Configuration">
+    </div>
     
     <h2>Project Overview</h2>
     <p>This project implements a sophisticated multi-level page table simulator in C++ that processes memory address traces and analyzes page access patterns. It demonstrates advanced memory management concepts and efficient data structure design for virtual memory simulation.</p>
@@ -131,6 +176,72 @@
       <li><strong>Access Counting:</strong> Tracks how many times each page is accessed</li>
       <li><strong>Output Generation:</strong> Produces detailed reports of memory access patterns</li>
     </ol>
+    
+    <h2>Address Translation Diagram</h2>
+    <p>This diagram shows how a 32-bit virtual address is broken down into page table indices:</p>
+    <div class="diagram-block">┌─────────────────────────────────────────────────────────┐
+│           32-bit Virtual Address: 0x0F562D88           │
+├────────────┬────────────┬────────────┬────────────────┤
+│    0x0F    │    0x56    │    0x2D    │      0x88      │
+│   8 bits   │   8 bits   │   8 bits   │     8 bits     │
+│  Level 0   │  Level 1   │  Level 2   │    Level 3     │
+│   Index    │   Index    │   Index    │     Index      │
+└────────────┴────────────┴────────────┴────────────────┘
+       │            │            │             │
+       ▼            ▼            ▼             ▼
+   ┌───────┐   ┌───────┐   ┌───────┐    ┌──────────┐
+   │Page   │──▶│Page   │──▶│Page   │──▶ │  Access  │
+   │Table  │   │Table  │   │Table  │    │  Count   │
+   │Level 0│   │Level 1│   │Level 2│    │    ↑     │
+   └───────┘   └───────┘   └───────┘    └──────────┘</div>
+
+    <h2>Multi-Level Page Table Tree</h2>
+    <p>The hierarchical structure of the page table with access counts at leaf nodes:</p>
+    <div class="diagram-block">                      ┌──────────────┐
+                      │     Root     │
+                      │  (Level 0)   │
+                      └──────┬───────┘
+                             │
+         ┌───────────────────┼───────────────────┐
+         ▼                   ▼                   ▼
+    ┌─────────┐         ┌─────────┐         ┌─────────┐
+    │Entry 0x0│         │Entry 0xF│         │Entry 0x25│
+    │ Level 1 │         │ Level 1 │         │ Level 1  │
+    └────┬────┘         └────┬────┘         └────┬─────┘
+         │                   │                   │
+    ┌────┴────┐         ┌────┴────┐         ┌────┴────┐
+    ▼         ▼         ▼         ▼         ▼         ▼
+┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐
+│ 0x0   │ │ 0x1   │ │ 0x56  │ │  ...  │ │ 0x8F  │ │  ...  │
+│Level 2│ │Level 2│ │Level 2│ │       │ │Level 2│ │       │
+└───┬───┘ └───┬───┘ └───┬───┘ └───────┘ └───┬───┘ └───────┘
+    │         │         │                   │
+    ▼         ▼         ▼                   ▼
+ ┌─────┐  ┌─────┐  ┌─────────────┐     ┌─────────┐
+ │Leaf │  │Leaf │  │ 0x2D: 14x   │     │ 0x71:3x │
+ │Nodes│  │Nodes│  │ 0xED: 2x    │     │         │
+ └─────┘  └─────┘  └─────────────┘     └─────────┘
+                   <span class="comment">(Access Counts)</span></div>
+
+    <h2>Bitmask Extraction</h2>
+    <p>How bitmasks are used to extract page indices from a virtual address:</p>
+    <div class="diagram-block">Address:     0x0F562D88  =  00001111 01010110 00101101 10001000
+
+Level 0 Mask: 0xFF000000  =  11111111 00000000 00000000 00000000
+              AND Result  =  00001111 00000000 00000000 00000000
+              >> 24       =  <span class="highlight">0x0F ✓</span>
+
+Level 1 Mask: 0x00FF0000  =  00000000 11111111 00000000 00000000
+              AND Result  =  00000000 01010110 00000000 00000000
+              >> 16       =  <span class="highlight">0x56 ✓</span>
+
+Level 2 Mask: 0x0000FF00  =  00000000 00000000 11111111 00000000
+              AND Result  =  00000000 00000000 00101101 00000000
+              >> 8        =  <span class="highlight">0x2D ✓</span>
+
+Level 3 Mask: 0x000000FF  =  00000000 00000000 00000000 11111111
+              AND Result  =  00000000 00000000 00000000 10001000
+              >> 0        =  <span class="highlight">0x88 ✓</span></div>
     
     <h2>Technical Implementation</h2>
     <h3>Core Classes</h3>
@@ -184,13 +295,10 @@ make clean && make<br><br>
       <li>Bit manipulation and optimization techniques</li>
     </ul>
     
-    <div style="text-align: center; margin-top: 2rem;">
-      <a href="https://github.com/Marlontino/Page-Table-Simulator" target="_blank" class="github-button">View on GitHub</a>
-    </div>
   </div>
 
   <footer>
-    <p>&copy; 2025 Niko Perry</p>
+    <p>&copy; 2026 Niko Perry</p>
   </footer>
 </body>
 </html> 
