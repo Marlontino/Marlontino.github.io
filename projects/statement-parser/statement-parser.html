@@ -95,6 +95,42 @@
       font-family: 'Courier New', monospace;
       font-size: 0.9rem;
     }
+    
+    .diagram-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.4;
+    }
+    
+    .diagram-block .highlight {
+      color: #4ec9b0;
+    }
+    
+    .diagram-block .keyword {
+      color: #569cd6;
+    }
+    
+    .diagram-block .string {
+      color: #ce9178;
+    }
+    
+    .project-image-full {
+      width: 100%;
+      max-width: 700px;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      margin: 1rem auto;
+      display: block;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
   </style>
 </head>
 <body>
@@ -107,7 +143,7 @@
   </div>
 
   <div class="project-content">
-    <img src="https://via.placeholder.com/600x300/8e44ad/ffffff?text=Statement+Parser" alt="Statement Parser Project" class="project-image">
+    <img src="images/scanner.png" alt="Statement Parser Terminal Output" class="project-image-full">
     
     <h2>Project Overview</h2>
     <p>This project implements a custom parser using Flex (lexical analyzer) and Bison (parser generator) to process text files containing arithmetic expressions and assignment statements. It demonstrates compiler theory concepts and language processing techniques.</p>
@@ -142,6 +178,43 @@
       <li><strong>Output Generation:</strong> Displays original input with validation status</li>
     </ol>
     
+    <h2>Architecture Diagram</h2>
+    <p>The overall flow of the parser system:</p>
+    <pre class="diagram-block">┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  Input File  │ ──► │   Scanner    │ ──► │    Parser    │ ──► Output
+│  (scanme.txt)│     │  (scanner.l) │     │  (parser.y)  │
+└──────────────┘     └──────────────┘     └──────────────┘
+                       Flex (Lexer)         Bison (Grammar)</pre>
+
+    <h2>Lexer/Scanner Flow</h2>
+    <p>How input text becomes tokens:</p>
+    <pre class="diagram-block">Input:  "good = one1 + two2 ;"
+           ↓
+┌─────────────────────────────────┐
+│         SCANNER (Flex)          │
+└─────────────────────────────────┘
+           ↓
+Tokens: [ID] [EQU] [ID] [OPERATOR] [ID] [SEMICOLON]
+        good  =   one1    +       two2     ;</pre>
+
+    <h2>Parse Tree Example</h2>
+    <p>How a valid statement like <code>x = a + b * c ;</code> gets parsed:</p>
+    <pre class="diagram-block">                    STATEMENT
+                   /   |   \   \
+                 ID   EQU  EXPRESSION  SEMICOLON
+                  |     |       |
+                  x     =   EXPRESSION
+                           /    |    \
+                   EXPRESSION  OP  EXPRESSION
+                        |       |       |
+                       ID       +   EXPRESSION
+                        |           /    |    \
+                        a       EXPRESSION OP EXPRESSION
+                                    |      |      |
+                                   ID      *     ID
+                                    |             |
+                                    b             c</pre>
+    
     <h2>BNF Grammar Structure</h2>
     <div class="grammar-block">
 &lt;digit&gt;       ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9<br>
@@ -150,6 +223,18 @@
 &lt;exp&gt;         ::= &lt;exp&gt; &lt;op&gt; &lt;exp&gt; | (&lt;exp&gt;) | &lt;id&gt; | &lt;digit&gt;<br>
 &lt;statement&gt;   ::= &lt;id&gt; = &lt;exp&gt; ;
     </div>
+    
+    <h3>Grammar Visualization</h3>
+    <pre class="diagram-block">┌─────────────────────────────────────────────────┐
+│                   STATEMENT                      │
+│         ID  =  EXPRESSION  ;                    │
+└─────────────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────┐
+│                  EXPRESSION                     │
+│   EXPRESSION OP EXPRESSION | (EXPRESSION) | ID | NUM │
+└─────────────────────────────────────────────────┘</pre>
     
     <h2>Usage Example</h2>
     <div class="code-block">
@@ -212,13 +297,10 @@ bad = = one1 + two2 - three3 / four4 ;   -- Invalid token: syntax error
       <li>Build automation with makefiles for complex compilation</li>
     </ul>
     
-    <div style="text-align: center; margin-top: 2rem;">
-      <a href="https://github.com/Marlontino/Statement-Parser" target="_blank" class="github-button">View on GitHub</a>
-    </div>
   </div>
 
   <footer>
-    <p>&copy; 2025 Niko Perry</p>
+    <p>&copy; 2026 Niko Perry</p>
   </footer>
 </body>
 </html> 

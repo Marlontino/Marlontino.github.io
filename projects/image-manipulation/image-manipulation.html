@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Image Manipulation Project | Niko Perry</title>
-  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../../style.css">
   <style>
     .project-header {
       background: linear-gradient(135deg, #4a90e2, #357abd);
@@ -74,6 +74,43 @@
     .github-button:hover {
       background: #555;
     }
+    
+    .image-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    
+    .image-gallery figure {
+      margin: 0;
+      text-align: center;
+    }
+    
+    .image-gallery img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    
+    .image-gallery figcaption {
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: #666;
+      font-style: italic;
+    }
+    
+    .pipeline-diagram {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -86,7 +123,29 @@
   </div>
 
   <div class="project-content">
-    <img src="https://via.placeholder.com/600x300/4a90e2/ffffff?text=Image+Manipulation+Project" alt="Image Manipulation Project" class="project-image">
+    <h2>Results Gallery</h2>
+    <div class="image-gallery">
+      <figure>
+        <img src="images/original.png" alt="Original Image">
+        <figcaption>Original Image</figcaption>
+      </figure>
+      <figure>
+        <img src="images/c_threshold.png" alt="C - Grayscale Threshold">
+        <figcaption>C - Grayscale Threshold</figcaption>
+      </figure>
+      <figure>
+        <img src="images/haskell_invert.png" alt="Haskell - Inverted">
+        <figcaption>Haskell - Inverted</figcaption>
+      </figure>
+      <figure>
+        <img src="images/prolog_rotate.png" alt="Prolog - 180° Rotation">
+        <figcaption>Prolog - 180° Rotation</figcaption>
+      </figure>
+      <figure>
+        <img src="images/output.png" alt="Final Output">
+        <figcaption>Final Combined Output</figcaption>
+      </figure>
+    </div>
     
     <h2>Project Overview</h2>
     <p>This project demonstrates multi-language programming and image processing techniques by creating a Python wrapper that orchestrates image manipulation operations across four different programming languages: MATLAB, C, Haskell, and Prolog.</p>
@@ -110,13 +169,30 @@
     </ul>
     
     <h2>How It Works</h2>
+    <div class="pipeline-diagram">
+      <strong>Processing Pipeline</strong><br><br>
+      📷 Original Image<br>
+      ↓<br>
+      🐍 <strong>Python Wrapper</strong> (Orchestrator)<br>
+      ↓<br>
+      ┌─────────────┬─────────────┬─────────────┐<br>
+      ↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+      📊 MATLAB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⚙️ C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;λ Haskell&nbsp;&nbsp;&nbsp;&nbsp;🔮 Prolog<br>
+      (Resize)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Threshold)&nbsp;&nbsp;&nbsp;(Invert)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rotate)<br>
+      ↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+      └─────────────┴─────────────┴─────────────┘<br>
+      ↓<br>
+      📊 MATLAB (Final Display)<br>
+      ↓<br>
+      🖼️ Combined Output
+    </div>
     <ol>
       <li>The Python wrapper script initiates the process</li>
       <li>MATLAB takes the original image and resizes it, outputting to "input.txt"</li>
-      <li>C program reads "input.txt" and converts to grayscale, creating "c_output.txt"</li>
-      <li>Haskell flips the values from "input.txt"</li>
+      <li>C program reads "input.txt" and applies grayscale threshold, creating "c_output.txt"</li>
+      <li>Haskell inverts the pixel values from "input.txt"</li>
       <li>Prolog performs 180-degree rotation on the original image</li>
-      <li>Final MATLAB script reads all output files and displays the results</li>
+      <li>Final MATLAB script reads all output files and displays the combined results</li>
     </ol>
     
     <h2>Project Structure</h2>
@@ -135,10 +211,18 @@
     <p>To run this project, you'll need Python, MATLAB, gcc, Haskell, and Prolog installed on your system. Simply run:</p>
     <code>python3 wrapper.py</code>
     
-    </div>
+    <h2>Skills Demonstrated</h2>
+    <ul>
+      <li><strong>Multi-Language Integration:</strong> Coordinating programs written in 5 different languages</li>
+      <li><strong>Image Processing:</strong> Understanding pixel manipulation, color spaces, and transformations</li>
+      <li><strong>Inter-Process Communication:</strong> Using file I/O to pass data between programs</li>
+      <li><strong>Functional Programming:</strong> Haskell implementation for value transformation</li>
+      <li><strong>Logic Programming:</strong> Prolog implementation for spatial operations</li>
+    </ul>
+  </div>
 
   <footer>
-    <p>&copy; 2025 Niko Perry</p>
+    <p>&copy; 2026 Niko Perry</p>
   </footer>
 </body>
 </html> 
