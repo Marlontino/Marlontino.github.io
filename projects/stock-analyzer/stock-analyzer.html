@@ -101,64 +101,98 @@
     <img src="images/cli.png" alt="Stock Analyzer CLI" class="project-image" onerror="this.src='https://via.placeholder.com/600x300/1abc9c/ffffff?text=Stock+Analyzer'">
     
     <h2>Project Overview</h2>
-    <p>A comprehensive stock market analysis and trading system that provides momentum analysis, volatility detection, sector rotation insights, and machine learning-based trading signals. This project demonstrates advanced data analysis, financial modeling, and machine learning skills applied to real-world market data.</p>
-    
+    <p>A comprehensive stock market analysis and trading system that provides momentum analysis, volatility detection, sector rotation insights, and machine learning-based trading signals. Built on a config-driven, multi-threaded architecture with real production logging — designed to demonstrate not just financial modeling and ML, but also the engineering practices that make a data pipeline reliable and maintainable.</p>
+
     <h2>Technologies Used</h2>
     <div class="tech-stack">
-      <span class="tech-tag">Python</span>
-      <span class="tech-tag">Machine Learning</span>
+      <span class="tech-tag">Python 3.10+</span>
       <span class="tech-tag">Pandas</span>
-      <span class="tech-tag">SQLite</span>
-      <span class="tech-tag">yfinance</span>
+      <span class="tech-tag">NumPy</span>
       <span class="tech-tag">scikit-learn</span>
-      <span class="tech-tag">Financial Analysis</span>
+      <span class="tech-tag">yfinance</span>
+      <span class="tech-tag">SQLite</span>
+      <span class="tech-tag">concurrent.futures</span>
+      <span class="tech-tag">BeautifulSoup</span>
+      <span class="tech-tag">matplotlib</span>
+      <span class="tech-tag">seaborn</span>
+      <span class="tech-tag">mplfinance</span>
+      <span class="tech-tag">Rotating Logging</span>
     </div>
-    
+
     <h2>Key Features</h2>
     <ul>
-      <li><strong>Momentum Analysis:</strong> Identify stocks with strong price momentum and risk-adjusted returns (Sharpe ratio)</li>
+      <li><strong>Momentum Analysis:</strong> Identify stocks with strong price momentum and risk-adjusted returns (Sharpe ratio, win rate)</li>
       <li><strong>Volatility Detection:</strong> Find stocks with unusual volatility patterns (breakouts/consolidation)</li>
-      <li><strong>Pairs Trading:</strong> Sector-specific pairs trading opportunities with correlation analysis</li>
-      <li><strong>Sector Rotation:</strong> Comprehensive sector performance analysis across all 11 S&P 500 sectors</li>
-      <li><strong>ML Signals:</strong> Machine learning-based buy/sell/hold signals using voting classifiers</li>
-      <li><strong>CLI Interface:</strong> Easy-to-use command-line interface for all operations</li>
+      <li><strong>Pairs Trading:</strong> Sector-specific pairs trading opportunities with correlation and z-score analysis</li>
+      <li><strong>Sector Rotation:</strong> Performance and rotation signals across all 11 S&P 500 sectors</li>
+      <li><strong>ML Signals:</strong> Buy/sell/hold signals from a voting classifier ensemble (LinearSVC + KNN + RandomForest)</li>
+      <li><strong>Parallel Fetching:</strong> Multi-threaded yfinance downloads via <code>ThreadPoolExecutor</code> with per-worker error isolation and a thread-safe SQLite writer</li>
+      <li><strong>Production Logging:</strong> Centralized logger writing to both console and a rotating log file (5 MB, 3 backups)</li>
+      <li><strong>Config-Driven:</strong> Tickers, thresholds, and API settings live in a gitignored <code>config.json</code> with dotted-path lookup and safe defaults</li>
+      <li><strong>CLI &amp; Python API:</strong> Use it as a command-line tool or import the analyzers directly in your own scripts</li>
     </ul>
     
     <h2>How It Works</h2>
     <ol>
-      <li><strong>Data Collection:</strong> Fetches stock data from Yahoo Finance via yfinance</li>
-      <li><strong>Data Storage:</strong> Stores data in SQLite database for efficient querying</li>
-      <li><strong>Analysis Pipeline:</strong> Runs momentum, volatility, pairs, and sector analyses</li>
-      <li><strong>ML Predictions:</strong> Generates buy/sell/hold signals using ensemble classifiers</li>
-      <li><strong>Reporting:</strong> Outputs actionable insights for investment decisions</li>
+      <li><strong>Data Collection:</strong> Pulls S&amp;P 500 tickers from Wikipedia (with a pickle fallback cache) and fetches OHLCV data from Yahoo Finance via parallel <code>yfinance</code> workers</li>
+      <li><strong>Data Storage:</strong> Persists data in a thread-safe SQLite database with serialized writes via a <code>threading.Lock</code></li>
+      <li><strong>Analysis Pipeline:</strong> Runs momentum, volatility, pairs, sector-rotation, and ML analyses, all tunable from a single <code>config.json</code></li>
+      <li><strong>ML Predictions:</strong> Generates buy/sell/hold signals using a voting classifier ensemble (LinearSVC + KNN + RandomForest)</li>
+      <li><strong>Reporting &amp; Logging:</strong> Outputs ranked insights to the console and a rotating log file for later review</li>
     </ol>
-    
-    <h2>Installation & Usage</h2>
+
+    <h2>Installation &amp; Usage</h2>
     <div class="code-block">
 # Clone the repository<br>
 $ git clone https://github.com/Marlontino/Stock-Analyzer.git<br>
-$ cd stock-analyzer<br><br>
+$ cd Stock-Analyzer<br><br>
 # Create virtual environment (Python 3.10+ required)<br>
-$ python3 -m venv venv<br>
-$ source venv/bin/activate<br><br>
+$ python -m venv .venv<br>
+$ .venv\Scripts\activate&nbsp;&nbsp;&nbsp;&nbsp;# Windows<br>
+$ source .venv/bin/activate&nbsp;&nbsp;# macOS / Linux<br><br>
 # Install dependencies<br>
 $ pip install -r requirements.txt<br><br>
-# Run all analyses<br>
-$ ./stock-analyzer analyze
+# Run a full weekly update (refresh data + every analysis)<br>
+$ ./stock-analyzer weekly
     </div>
-    
+
     <h2>CLI Commands</h2>
     <div class="code-block">
 # Check database status<br>
 $ ./stock-analyzer status<br><br>
-# Update all S&P 500 stock data<br>
-$ ./stock-analyzer update<br><br>
-# Run specific analysis<br>
-$ ./stock-analyzer analyze momentum<br>
+# Update all S&P 500 stock data (parallel fetch)<br>
+$ ./stock-analyzer update<br>
+$ ./stock-analyzer update --force<br>
+$ ./stock-analyzer update --tickers AAPL MSFT GOOGL NVDA META<br><br>
+# Fetch specific stocks one-off<br>
+$ ./stock-analyzer fetch AAPL MSFT GOOGL<br><br>
+# Run all analyses, or scope to one<br>
+$ ./stock-analyzer analyze<br>
+$ ./stock-analyzer analyze momentum --tickers AAPL MSFT GOOGL<br>
 $ ./stock-analyzer analyze volatility<br>
 $ ./stock-analyzer analyze pairs<br>
 $ ./stock-analyzer analyze sectors<br>
-$ ./stock-analyzer analyze ml
+$ ./stock-analyzer analyze ml<br><br>
+# Full weekly update (refresh + every analysis)<br>
+$ ./stock-analyzer weekly
+    </div>
+
+    <h2>Python API</h2>
+    <p>The analyzers can also be imported directly into your own scripts or notebooks:</p>
+    <div class="code-block">
+from stock_analyzer.data.database import DatabaseManager<br>
+from stock_analyzer.data.fetcher import StockDataFetcher<br>
+from stock_analyzer.analysis.momentum import MomentumAnalyzer<br><br>
+# Fetch data in parallel<br>
+with DatabaseManager() as db:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;with StockDataFetcher(db) as fetcher:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fetcher.fetch_multiple(['AAPL', 'MSFT', 'GOOGL'])<br><br>
+# Run analysis<br>
+with MomentumAnalyzer() as analyzer:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;results = analyzer.find_momentum_stocks(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tickers=['AAPL', 'MSFT', 'GOOGL'],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lookback_days=20,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)
     </div>
     
     <h2>Sample Output</h2>
@@ -186,51 +220,69 @@ $ ./stock-analyzer analyze ml
     <h3>Momentum Analysis</h3>
     <div class="output-block">
 📈 TOP MOMENTUM STOCKS<br>
-GOOGL: 4.32% momentum, Sharpe: 3.57<br>
-NVDA: 0.23% momentum, Sharpe: 0.09
+1. AAPL — Momentum: 11.66% | Sharpe: 10.01 | Win Rate: 71.4%<br>
+2. NVDA — Momentum:&nbsp; 8.49% | Sharpe:&nbsp; 2.50 | Win Rate: 57.1%
     </div>
-    
+
     <h3>Volatility Analysis</h3>
     <div class="output-block">
-🔥 HIGHEST VOLATILITY RATIOS:<br>
-MSFT: HIGH_VOL (ratio: 1.64x average)<br>
-AAPL: HIGH_VOL (ratio: 1.62x average)
+📊 VOLATILITY ANALYSIS<br>
+NVDA: NORMAL (ratio 0.95x, current 0.0256)<br>
+META: LOW_VOL (ratio 0.64x, current 0.0116)
     </div>
-    
+
     <h3>Pairs Trading</h3>
     <div class="output-block">
-🔗 PAIRS TRADING OPPORTUNITIES:<br>
+🔗 PAIRS TRADING OPPORTUNITIES<br>
 1. Industrials - GNRC-IEX<br>
-   Signal: BUY_IEX_SELL_GNRC<br>
-   Z-score: 3.94 | Correlation: 0.80
+&nbsp;&nbsp;&nbsp;Signal: BUY_IEX_SELL_GNRC<br>
+&nbsp;&nbsp;&nbsp;Z-score: 3.94 | Correlation: 0.80
     </div>
-    
+
+    <h3>Sector Rotation</h3>
+    <div class="output-block">
+🔄 SECTOR ROTATION ANALYSIS<br>
+🟡 Real Estate (XLRE)&nbsp;&nbsp;&nbsp;HOLD — Sharpe 0.02 | Market Correlation 0.63<br>
+🟡 Energy (XLE)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HOLD — Sharpe 0.07 | Market Correlation -0.52
+    </div>
+
+    <h3>Logging</h3>
+    <div class="output-block">
+[2026-05-24 19:25:32] [INFO] Pairs trading signal detected for AAPL/MSFT<br>
+[2026-05-24 19:25:32] [WARNING] BRK.B: No data returned<br>
+[2026-05-24 19:25:32] [ERROR] SQL Error: no such column: foo
+    </div>
+
     <h2>Project Structure</h2>
     <ul>
-      <li><strong>data/</strong> - Database management and data fetching modules</li>
-      <li><strong>analysis/</strong> - Momentum, volatility, pairs trading, sector rotation, ML signals</li>
-      <li><strong>config/</strong> - Settings, thresholds, and S&P 500 sector definitions</li>
-      <li><strong>services/</strong> - Scheduler and update orchestration</li>
-      <li><strong>notebooks/</strong> - Jupyter notebooks for exploration</li>
+      <li><strong>src/stock_analyzer/</strong> — Installable package layout, with <code>main.py</code> as the CLI entry point</li>
+      <li><strong>data/</strong> — SQLite database, parallel yfinance fetcher, and Wikipedia S&amp;P 500 scraper</li>
+      <li><strong>analysis/</strong> — Momentum, volatility, pairs trading, sector rotation, ML signals</li>
+      <li><strong>config/</strong> — Default settings (overridden by <code>config.json</code>) and S&amp;P 500 sector definitions</li>
+      <li><strong>services/</strong> — Scheduler and update orchestration</li>
+      <li><strong>utils/</strong> — Dotted-path <code>config.json</code> loader and the central rotating logger</li>
+      <li><strong>tests/</strong> — Test suite</li>
+      <li><strong>notebooks/</strong> — Jupyter notebooks for exploration</li>
     </ul>
-    
+
     <h2>Skills Demonstrated</h2>
     <ul>
       <li>Financial data analysis and quantitative modeling</li>
-      <li>Machine learning for trading signal generation</li>
+      <li>Ensemble machine learning for trading signal generation</li>
+      <li>Concurrency: <code>ThreadPoolExecutor</code>, locking, and thread-safe SQLite access</li>
+      <li>Production engineering practices: config-driven design, rotating logs, graceful error isolation</li>
       <li>API integration with financial data sources</li>
-      <li>Database design and management with SQLite</li>
-      <li>CLI application development</li>
+      <li>CLI and Python-API design (dual-mode entry points)</li>
       <li>Statistical analysis (correlation, z-scores, Sharpe ratio)</li>
     </ul>
-    
+
     <h2>Project Highlights</h2>
     <ul>
-      <li><strong>Real-World Application:</strong> Analyzes actual S&P 500 stock data</li>
-      <li><strong>Machine Learning:</strong> Voting classifier ensemble for trading signals</li>
-      <li><strong>Comprehensive Analysis:</strong> Multiple analysis types in one tool</li>
-      <li><strong>Professional CLI:</strong> Production-ready command-line interface</li>
-      <li><strong>Extensible Design:</strong> Modular architecture for easy enhancements</li>
+      <li><strong>Real-World Application:</strong> Analyzes actual S&amp;P 500 stock data, end-to-end</li>
+      <li><strong>Parallel by Default:</strong> Full S&amp;P 500 refresh in ~3-5 minutes via multi-threaded fetching</li>
+      <li><strong>Resilient:</strong> One ticker's network failure can't crash the batch — errors are caught, logged, and traceable</li>
+      <li><strong>Config-Driven:</strong> Every threshold and tunable lives in <code>config.json</code> with safe defaults baked in</li>
+      <li><strong>Extensible Design:</strong> Modular package layout (<code>src/stock_analyzer/</code>) ready for new analyses or data sources</li>
     </ul>
     
     </div>
