@@ -92,7 +92,7 @@
     <div class="project-content">
       <a href="../../index.html" class="back-link">← Back to Portfolio</a>
       <h1>Weather Automation Pipeline</h1>
-      <p>Automated weather data collection, processing, summarization, and visualization using Python</p>
+      <p>End-to-end weather ETL with PostgreSQL upserts, SQLAlchemy, and a Dockerized one-command stack</p>
     </div>
   </div>
 
@@ -100,89 +100,132 @@
     <img src="images/wap.png" alt="Weather Automation Pipeline Project" class="project-image" style="object-fit: contain; height: auto;">
     
     <h2>Project Overview</h2>
-    <p>This project demonstrates an end-to-end data automation workflow: fetching real-world weather data from the Open-Meteo API, processing it into clean datasets, generating daily summaries, and producing visualizations. It showcases Python, Pandas, Matplotlib, and automation skills essential for data analysis roles.</p>
-    
+    <p>An end-to-end data automation workflow that fetches real-world weather data from the Open-Meteo API, persists it in <strong>PostgreSQL</strong> with idempotent upserts, generates daily summaries directly from the database, and produces visualizations. The entire stack — Postgres plus the pipeline — runs with a single <code>docker-compose up</code>.</p>
+
     <h2>Technologies Used</h2>
     <div class="tech-stack">
       <span class="tech-tag">Python</span>
+      <span class="tech-tag">PostgreSQL 16</span>
+      <span class="tech-tag">SQLAlchemy 2.x</span>
+      <span class="tech-tag">Docker</span>
+      <span class="tech-tag">docker-compose</span>
       <span class="tech-tag">Pandas</span>
       <span class="tech-tag">Matplotlib</span>
       <span class="tech-tag">Seaborn</span>
-      <span class="tech-tag">API Integration</span>
-      <span class="tech-tag">Data Pipeline</span>
+      <span class="tech-tag">Open-Meteo API</span>
     </div>
-    
+
     <h2>Key Features</h2>
     <ul>
-      <li><strong>Automated Data Collection:</strong> Fetches hourly weather data using the Open-Meteo API</li>
-      <li><strong>Data Processing:</strong> Converts raw JSON into clean CSV files with validation</li>
-      <li><strong>Daily Summary Generation:</strong> Computes daily average, min, and max temperatures</li>
-      <li><strong>Visualization:</strong> Generates line plots for temperatures and bar plots for precipitation</li>
-      <li><strong>Logging:</strong> Tracks pipeline progress and errors for debugging</li>
-      <li><strong>Reproducibility:</strong> Stores raw JSON locally for data lineage</li>
+      <li><strong>Automated Data Collection:</strong> Fetches hourly weather data from the Open-Meteo API and archives the raw JSON locally for replay</li>
+      <li><strong>PostgreSQL-backed Storage:</strong> Two tables (<code>hourly_weather</code>, <code>daily_summary</code>) with composite primary keys on <code>(timestamp, lat, lon)</code> and <code>(date, lat, lon)</code></li>
+      <li><strong>Idempotent Upserts:</strong> Every write uses <code>INSERT … ON CONFLICT DO UPDATE</code>, so re-running the pipeline refreshes rows instead of duplicating or erroring</li>
+      <li><strong>DB-native Summaries:</strong> Daily averages, mins, maxes, and totals are computed from the database — not from CSV intermediates</li>
+      <li><strong>Visualization:</strong> Line plot for daily avg/min/max temperature (°F) and a bar plot for daily precipitation (mm), saved as timestamped PNGs</li>
+      <li><strong>Containerized Stack:</strong> <code>docker-compose up</code> brings up Postgres and the pipeline; the pipeline waits on a Postgres healthcheck before running</li>
+      <li><strong>Persistent Volumes:</strong> Named <code>weather_pgdata</code> volume preserves the DB across restarts; <code>data/</code> is bind-mounted so JSON and plots stay visible on the host</li>
     </ul>
-    
+
     <h2>How It Works</h2>
     <ol>
-      <li><strong>Fetch Data:</strong> Retrieves hourly weather data from Open-Meteo API</li>
-      <li><strong>Process Data:</strong> Cleans and validates timestamps, handles missing data</li>
-      <li><strong>Generate Summary:</strong> Calculates daily statistics (avg, min, max temps, total precipitation)</li>
-      <li><strong>Visualize:</strong> Creates temperature and precipitation plots saved as PNG files</li>
-      <li><strong>Log Progress:</strong> Records pipeline execution for monitoring and debugging</li>
+      <li><strong>Fetch:</strong> <code>fetch_weather.py</code> hits the Open-Meteo API and archives the raw JSON</li>
+      <li><strong>Process &amp; Upsert:</strong> <code>process_weather.py</code> parses the JSON and upserts hourly rows into Postgres</li>
+      <li><strong>Summarize:</strong> <code>daily_summary.py</code> aggregates hourly rows directly in SQL and writes <code>daily_summary</code></li>
+      <li><strong>Visualize:</strong> <code>visualize_summary.py</code> renders temperature and precipitation plots from the <code>daily_summary</code> table</li>
+      <li><strong>Orchestrate:</strong> <code>main.py</code> runs the full pipeline; <code>db.py</code> centralizes the SQLAlchemy engine, schema, and upsert helpers</li>
     </ol>
-    
-    <h2>Installation & Usage</h2>
+
+    <h2>Quick Start (Docker)</h2>
     <div class="code-block">
-# Clone the repository<br>
 $ git clone https://github.com/Marlontino/Weather.git<br>
-$ cd Weather<br><br>
-# Create a virtual environment<br>
+$ cd Weather<br>
+$ docker-compose up --build
+    </div>
+    <p>That command builds the pipeline image, starts a <code>postgres:16-alpine</code> container with the <code>weather</code> database, waits for Postgres to be healthy, and runs the pipeline once. Inspect results with:</p>
+    <div class="code-block">
+$ docker-compose exec db psql -U weather -d weather \<br>
+&nbsp;&nbsp;&nbsp;&nbsp;-c "SELECT * FROM daily_summary ORDER BY date;"
+    </div>
+
+    <h2>Local (non-Docker) Setup</h2>
+    <div class="code-block">
+# Requires a local Postgres 13+ with a 'weather' DB and user<br>
 $ python -m venv venv<br>
-$ source venv/bin/activate  # On Windows: venv\Scripts\activate<br><br>
-# Install dependencies<br>
+$ venv\Scripts\activate&nbsp;&nbsp;&nbsp;&nbsp;# Windows<br>
+$ source venv/bin/activate&nbsp;&nbsp;# macOS / Linux<br>
 $ pip install -r requirements.txt<br><br>
-# Run the full pipeline<br>
+$ set DATABASE_URL=postgresql+psycopg2://weather:weather@localhost:5432/weather<br>
 $ python -m src.main
     </div>
-    
-    <h2>Pipeline Output</h2>
-    <div class="output-block">
-data/raw/weather_YYYYMMDD_HHMMSS.json         → Raw hourly data<br><br>
-data/processed/weather_YYYYMMDD_HHMMSS.csv    → Cleaned hourly CSV<br><br>
-data/summary/weather_..._daily_summary.csv    → Daily summary stats<br><br>
-data/plots/weather_..._temp_f.png             → Temperature plot (°F)<br><br>
-data/plots/weather_..._precip.png             → Precipitation plot
+
+    <h2>Database Schema</h2>
+    <div class="code-block">
+CREATE TABLE hourly_weather (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;timestamp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TIMESTAMP NOT NULL,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;latitude&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NUMERIC(8,5) NOT NULL,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;longitude&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NUMERIC(8,5) NOT NULL,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;temperature_c&nbsp;&nbsp;&nbsp;&nbsp;DOUBLE PRECISION,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;precipitation_mm DOUBLE PRECISION,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;PRIMARY KEY (timestamp, latitude, longitude)<br>
+);<br><br>
+CREATE TABLE daily_summary (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DATE NOT NULL,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;latitude&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NUMERIC(8,5) NOT NULL,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;longitude&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NUMERIC(8,5) NOT NULL,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;avg_temperature_c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DOUBLE PRECISION,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;min_temperature_c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DOUBLE PRECISION,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;max_temperature_c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DOUBLE PRECISION,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;total_precipitation_mm DOUBLE PRECISION,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;PRIMARY KEY (date, latitude, longitude)<br>
+);
     </div>
-    
+    <p>Schemas are created automatically on first run by <code>db.init_schema()</code>.</p>
+
+    <h2>How Upserts Work</h2>
+    <p>The pipeline uses PostgreSQL's <code>INSERT … ON CONFLICT DO UPDATE</code> to stay idempotent across re-runs:</p>
+    <div class="code-block">
+INSERT INTO hourly_weather (timestamp, latitude, longitude, temperature_c, precipitation_mm)<br>
+VALUES (...)<br>
+ON CONFLICT (timestamp, latitude, longitude)<br>
+DO UPDATE SET<br>
+&nbsp;&nbsp;&nbsp;&nbsp;temperature_c&nbsp;&nbsp;&nbsp;&nbsp;= EXCLUDED.temperature_c,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;precipitation_mm = EXCLUDED.precipitation_mm;
+    </div>
+    <p>This means the pipeline can run on a cron/scheduled container multiple times a day with overlapping windows — no duplicates, no primary-key violations, just refreshed rows.</p>
+
     <h2>Project Structure</h2>
     <ul>
-      <li><strong>fetch_weather.py:</strong> Fetches weather data from Open-Meteo API</li>
-      <li><strong>process_weather.py:</strong> Processes raw JSON into cleaned CSV</li>
-      <li><strong>daily_summary.py:</strong> Generates daily summary statistics</li>
-      <li><strong>visualize_summary.py:</strong> Produces plots from daily summaries</li>
-      <li><strong>main.py:</strong> Orchestrates the full pipeline</li>
+      <li><strong>src/fetch_weather.py:</strong> Fetches weather data from the Open-Meteo API</li>
+      <li><strong>src/process_weather.py:</strong> Parses raw JSON and upserts hourly rows into Postgres</li>
+      <li><strong>src/daily_summary.py:</strong> Aggregates hourly rows into <code>daily_summary</code></li>
+      <li><strong>src/visualize_summary.py:</strong> Renders plots from the <code>daily_summary</code> table</li>
+      <li><strong>src/db.py:</strong> SQLAlchemy engine, table schema, upsert helpers</li>
+      <li><strong>src/main.py:</strong> Orchestrates the full pipeline</li>
+      <li><strong>Dockerfile / docker-compose.yml:</strong> Pipeline image + Postgres stack</li>
     </ul>
-    
+
     <h2>Visualizations</h2>
     <img src="images/dt.png" alt="Daily Temperature Plot" class="project-image" style="object-fit: contain; height: auto; max-width: 100%;">
     <p style="text-align: center; color: #666; font-style: italic;">Daily temperature trends visualization</p>
 
     <h2>Skills Demonstrated</h2>
     <ul>
-      <li>Python scripting and package organization</li>
+      <li>Data engineering with <strong>PostgreSQL</strong> and <strong>SQLAlchemy 2.x</strong></li>
+      <li>Idempotent ingestion via <strong>UPSERT</strong> semantics (<code>ON CONFLICT DO UPDATE</code>)</li>
+      <li>Containerization with <strong>Docker</strong> and <strong>docker-compose</strong> (healthcheck-gated startup, named volumes)</li>
       <li>API integration and JSON handling</li>
-      <li>Data cleaning and time-series processing with Pandas</li>
-      <li>Automated reporting and data visualization</li>
+      <li>Python scripting and package organization</li>
       <li>Logging and workflow orchestration</li>
+      <li>Data visualization with pandas / matplotlib / seaborn</li>
     </ul>
-    
+
     <h2>Project Highlights</h2>
     <ul>
-      <li><strong>Data Engineering:</strong> Complete ETL pipeline from API to visualization</li>
-      <li><strong>Automation:</strong> Fully automated workflow with single command execution</li>
-      <li><strong>Best Practices:</strong> Logging, error handling, and reproducible data storage</li>
-      <li><strong>Portfolio Ready:</strong> Generates publication-quality plots for reporting</li>
-      <li><strong>Extensible:</strong> Designed for easy additions like anomaly detection or dashboards</li>
+      <li><strong>Real Database, Not CSVs:</strong> Daily summaries are computed in SQL from a real Postgres table — closer to how production pipelines actually work</li>
+      <li><strong>Safe to Re-Run:</strong> Idempotent upserts mean overlapping cron runs just refresh existing rows</li>
+      <li><strong>One-Command Stack:</strong> <code>docker-compose up</code> spins up the entire pipeline + database</li>
+      <li><strong>Persistent &amp; Reproducible:</strong> Named volumes keep DB state; raw JSON is archived for replay</li>
+      <li><strong>Extensible:</strong> Designed for multi-location ingestion, scheduled runners, dashboards, and anomaly detection</li>
     </ul>
     
     </div>
