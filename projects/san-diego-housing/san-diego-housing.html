@@ -131,7 +131,7 @@
     <div class="project-content" style="background: transparent; box-shadow: none;">
       <a href="../../index.html" class="back-link" style="color: white;">← Back to Portfolio</a>
       <h1>San Diego Housing Market Analysis</h1>
-      <p>Comprehensive data analysis of the San Diego Airbnb market with predictive modeling and interactive visualizations</p>
+      <p>Auditable Airbnb preprocessing pipeline, Random Forest pricing model, and a Streamlit dashboard for interactive exploration</p>
     </div>
   </div>
 
@@ -139,57 +139,89 @@
     <img src="images/market_analysis_plots.png" alt="San Diego Market Analysis" class="project-image">
     
     <h2>Project Overview</h2>
-    <p>A comprehensive data analysis project examining the San Diego Airbnb market using advanced analytics, predictive modeling, and interactive visualizations. This project provides deep insights into pricing patterns, neighborhood analysis, and market trends to help understand the rental market dynamics.</p>
-    
+    <p>A comprehensive data analysis project examining the San Diego Airbnb market — combining an <strong>auditable preprocessing pipeline</strong>, predictive modeling, static reports, and a <strong>Streamlit dashboard</strong> for interactive exploration. Built around the philosophy that data analytics is 80% data cleaning, the project is intentionally explicit about every row dropped or imputed so a reviewer can audit the methodology end-to-end.</p>
+
     <h2>Technologies Used</h2>
     <div class="tech-stack">
       <span class="tech-tag">Python</span>
       <span class="tech-tag">Pandas</span>
       <span class="tech-tag">NumPy</span>
+      <span class="tech-tag">scikit-learn</span>
+      <span class="tech-tag">Streamlit</span>
       <span class="tech-tag">Matplotlib</span>
       <span class="tech-tag">Seaborn</span>
       <span class="tech-tag">Folium</span>
-      <span class="tech-tag">scikit-learn</span>
     </div>
 
     <h2>Key Insights</h2>
     <div class="insights-grid">
       <div class="insight-card">
-        <h4>11,399</h4>
-        <p>Clean Listings Analyzed</p>
+        <h4>10,720</h4>
+        <p>Clean Listings (from 12,959 raw)</p>
       </div>
       <div class="insight-card">
-        <h4>$304</h4>
-        <p>Average Nightly Price</p>
+        <h4>$197</h4>
+        <p>Median Nightly Price</p>
       </div>
       <div class="insight-card">
-        <h4>84.2%</h4>
-        <p>Entire Homes/Apartments</p>
+        <h4>$341</h4>
+        <p>Mean Nightly Price</p>
       </div>
       <div class="insight-card">
         <h4>68.8%</h4>
         <p>Model R² Score</p>
       </div>
     </div>
-    
+
     <h2>Features</h2>
     <ul>
-      <li><strong>Data Cleaning:</strong> Automatic outlier removal and data quality checks</li>
-      <li><strong>Price Analysis:</strong> Statistical analysis with clean vs. original data comparisons</li>
-      <li><strong>Neighborhood Insights:</strong> Top neighborhoods by listings, pricing, and value scores</li>
-      <li><strong>Market Composition:</strong> Room type distribution and pricing analysis</li>
-      <li><strong>Predictive Modeling:</strong> Random Forest regression with feature importance analysis</li>
-      <li><strong>Interactive Maps:</strong> Geographic heatmaps and clickable neighborhood markers</li>
+      <li><strong>Auditable Preprocessing Pipeline:</strong> Explicit, parameterized cleaning (<code>iqr_multiplier</code>, <code>rare_property_threshold</code>) that returns both a cleaned DataFrame and a step-by-step report dict</li>
+      <li><strong>Per-Neighborhood IQR Outlier Filtering:</strong> Outliers are computed within each neighborhood, not globally — a $1,200/night listing is an outlier in North Hills but normal in La Jolla, and the global filter would miss that</li>
+      <li><strong>Property-Type-Aware Imputation:</strong> Missing bedroom/bathroom counts are filled from the median of the listing's <em>property type</em>, not the global median across treehouses and yachts</li>
+      <li><strong>Streamlit Interactive Dashboard:</strong> Multiselect filters across 101 neighborhoods, price/room-type/bedroom sliders, live-recomputing KPIs, and an embedded geo map</li>
+      <li><strong>Predictive Modeling:</strong> Random Forest regression with feature importance analysis, evaluated on a 1,000-row held-out test set</li>
+      <li><strong>Interactive Maps:</strong> Folium-based price heatmaps and clickable neighborhood markers</li>
+      <li><strong>Shared Source of Truth:</strong> Both the batch pipeline and the dashboard call the same <code>preprocess()</code> function — no drift between report numbers and dashboard numbers</li>
     </ul>
+
+    <h2>Cleaning Methodology</h2>
+    <p>The pipeline (<code>src/preprocessing.py</code>) emits a step-by-step report on every run so reviewers can see exactly what was dropped or imputed:</p>
+    <div style="background:#f8f9fa; border:1px solid #e9ecef; border-radius:5px; padding:1rem; font-family:'Courier New', monospace; font-size:0.9rem; overflow-x:auto;">
+rows_raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12,959<br>
+dropped_missing_critical&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1,355<br>
+rows_after_imputation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11,604<br>
+dropped_price_outliers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;884<br>
+property_types_collapsed_to_other&nbsp;&nbsp;&nbsp;&nbsp;39<br>
+rows_final&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10,720
+    </div>
+    <p>Three deliberate design choices:</p>
+    <ol>
+      <li><strong>Drop vs. impute, per field.</strong> Load-bearing fields (<code>price</code>, <code>neighbourhood_cleansed</code>, <code>latitude</code>, <code>longitude</code>, <code>room_type</code>) are dropped if missing — we refuse to fabricate them. Structural fields (<code>bedrooms</code>, <code>beds</code>, <code>bathrooms</code>) are imputed from the <em>property-type median</em>, falling back to the global median only when a property type has no observations. Review scores are imputed with the column median because they are legitimately blank for brand-new listings.</li>
+      <li><strong>Per-neighborhood IQR for outliers.</strong> A single $50M La Jolla mansion will drag both La Jolla's mean and the city-wide mean upward. Computing Q1/Q3 within each neighborhood preserves La Jolla's legitimate high-end inventory while still catching obvious data errors in cheaper neighborhoods. ~7% of listings were filtered this way; the multiplier is parameterized so reviewers can loosen it.</li>
+      <li><strong>Collapse rare property types.</strong> 39 categories with fewer than 50 listings each (Tipi, Yurt, etc.) are bucketed into <code>"Other"</code> so dashboards and category filters stay readable.</li>
+    </ol>
+
+    <h2>Interactive Dashboard (Streamlit)</h2>
+    <p>Static charts work for a one-shot report, but stakeholders usually want to filter the data themselves. <code>src/dashboard.py</code> wraps the same cleaning pipeline in a Streamlit app:</p>
+    <ul>
+      <li>Multiselect across <strong>101 distinct neighborhoods</strong> (more usable than a slider for unordered categoricals)</li>
+      <li>Nightly price range slider, room type filter, minimum bedrooms filter</li>
+      <li><strong>Live KPIs</strong> — listing count, median price, mean price, average review score — that recompute as filters change</li>
+      <li>Median price by neighborhood bar chart, price distribution histogram, and a geographic map of the filtered listings</li>
+    </ul>
+    <div style="background:#f8f9fa; border:1px solid #e9ecef; border-radius:5px; padding:1rem; margin:1rem 0; font-family:'Courier New', monospace; font-size:0.9rem;">
+$ streamlit run src/dashboard.py&nbsp;&nbsp;# then open http://localhost:8501
+    </div>
 
     <h2>Top Neighborhoods</h2>
     <ol>
-      <li><strong>Mission Bay:</strong> 1,620 listings, Avg: $493/night</li>
-      <li><strong>Pacific Beach:</strong> 1,008 listings, Avg: $357/night</li>
-      <li><strong>La Jolla:</strong> 832 listings, Avg: $513/night</li>
-      <li><strong>Ocean Beach:</strong> 586 listings, Avg: $284/night</li>
-      <li><strong>North Hills:</strong> 487 listings, Avg: $191/night</li>
+      <li><strong>Mission Bay:</strong> 1,542 listings, Avg: $438/night</li>
+      <li><strong>Pacific Beach:</strong> 959 listings, Avg: $313/night</li>
+      <li><strong>La Jolla:</strong> 803 listings, Avg: $469/night</li>
+      <li><strong>Ocean Beach:</strong> 540 listings, Avg: $232/night</li>
+      <li><strong>North Hills:</strong> 463 listings, Avg: $171/night</li>
     </ol>
+    <p style="color:#666; font-size:0.9rem; margin-top:0.5rem;">Entire homes/apartments make up <strong>86.3%</strong> of the cleaned dataset; private rooms account for the remaining ~13%.</p>
 
     <h2>Visualizations</h2>
     <div class="image-gallery">
