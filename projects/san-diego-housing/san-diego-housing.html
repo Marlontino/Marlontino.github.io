@@ -136,8 +136,18 @@
   </div>
 
   <div class="project-content">
+    <div style="text-align:center; margin-bottom:1.5rem;">
+      <a href="https://san-diego-housing.streamlit.app/" target="_blank" rel="noopener"
+         style="display:inline-block; background:#FF4B4B; color:white; padding:0.9rem 1.8rem;
+                text-decoration:none; border-radius:6px; font-weight:bold; font-size:1.05rem;
+                box-shadow:0 2px 8px rgba(255,75,75,0.3);">
+        ▶ Try the Live Dashboard
+      </a>
+      <p style="color:#666; font-size:0.9rem; margin-top:0.5rem;">Hosted on Streamlit Community Cloud — filter 10,720 listings live</p>
+    </div>
+
     <img src="images/market_analysis_plots.png" alt="San Diego Market Analysis" class="project-image">
-    
+
     <h2>Project Overview</h2>
     <p>A comprehensive data analysis project examining the San Diego Airbnb market — combining an <strong>auditable preprocessing pipeline</strong>, predictive modeling, static reports, and a <strong>Streamlit dashboard</strong> for interactive exploration. Built around the philosophy that data analytics is 80% data cleaning, the project is intentionally explicit about every row dropped or imputed so a reviewer can audit the methodology end-to-end.</p>
 
@@ -209,6 +219,13 @@ rows_final&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs
       <li><strong>Live KPIs</strong> — listing count, median price, mean price, average review score — that recompute as filters change</li>
       <li>Median price by neighborhood bar chart, price distribution histogram, and a geographic map of the filtered listings</li>
     </ul>
+    <p>
+      <a href="https://san-diego-housing.streamlit.app/" target="_blank" rel="noopener"
+         style="color:#FF4B4B; font-weight:bold; text-decoration:none;">
+        ▶ Open the live dashboard →
+      </a>
+      &nbsp;&nbsp;or run locally:
+    </p>
     <div style="background:#f8f9fa; border:1px solid #e9ecef; border-radius:5px; padding:1rem; margin:1rem 0; font-family:'Courier New', monospace; font-size:0.9rem;">
 $ streamlit run src/dashboard.py&nbsp;&nbsp;# then open http://localhost:8501
     </div>
