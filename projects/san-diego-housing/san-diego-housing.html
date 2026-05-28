@@ -256,6 +256,45 @@ $ streamlit run src/dashboard.py&nbsp;&nbsp;# then open http://localhost:8501
       </div>
     </div>
 
+    <h2>Booking Seasonality (Forward Calendar)</h2>
+    <p>The Airbnb forward calendar (one row per listing per day for the next 365 days) lets us see <em>booking pressure</em> — the share of listings already marked unavailable on a given date. Inside Airbnb does not publish price-per-night in the San Diego calendar snapshot, so this analysis measures demand timing rather than price seasonality.</p>
+
+    <div class="insights-grid" style="margin-top:1.5rem;">
+      <div class="insight-card">
+        <h4>2.94x</h4>
+        <p>Peak-to-trough booking ratio</p>
+      </div>
+      <div class="insight-card">
+        <h4>Jun '25</h4>
+        <p>Peak month (79% booked)</p>
+      </div>
+      <div class="insight-card">
+        <h4>Dec '25</h4>
+        <p>Trough month (27% booked)</p>
+      </div>
+      <div class="insight-card">
+        <h4>+2.7 pp</h4>
+        <p>Weekend lift (Fri-Sun vs. Mon-Wed)</p>
+      </div>
+    </div>
+
+    <div class="image-gallery">
+      <div class="gallery-item">
+        <img src="images/seasonality_monthly.png" alt="Monthly Booking Pressure">
+        <p>Monthly booking pressure: San Diego is a textbook tourism market — summer demand crashes through Q4 and rebuilds by April.</p>
+      </div>
+      <div class="gallery-item">
+        <img src="images/seasonality_weekday.png" alt="Weekday Booking Pressure">
+        <p>Day-of-week pattern: a modest but consistent Fri-Sat weekend premium (~4 pp over midweek).</p>
+      </div>
+      <div class="gallery-item">
+        <img src="images/seasonality_min_nights.png" alt="Minimum-Stay Policy Distribution">
+        <p>Minimum-stay policy distribution: ~54% of hosts require a 2-3 night minimum, but a meaningful ~20% require 30+ nights — typically the monthly-rental segment in markets with short-term rental restrictions.</p>
+      </div>
+    </div>
+
+    <p style="color:#666; font-size:0.9rem; font-style:italic;">Based on 189 listings with full forward calendars (~69,000 listing-day rows) over 2025-06-30 to 2026-06-29. The full breakdown lives in <code>results/seasonality_summary.json</code> and the analysis code is in <code>src/time_series.py</code>.</p>
+
     <h2>Model Performance</h2>
     <ul>
       <li><strong>Basic Model:</strong> MAE $87.50, R² 0.674</li>
