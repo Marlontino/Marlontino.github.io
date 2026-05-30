@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberSense Pipeline | Niko Perry</title>
+  <link rel="stylesheet" href="../../style.css">
+  <style>
+    .project-header {
+      background: linear-gradient(135deg, #c0392b, #1a252f);
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    .project-content {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      color: #ecf0f1;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .project-image {
+      width: 100%;
+      max-width: 600px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .tech-tag {
+      background: #c0392b;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    .github-button {
+      display: inline-block;
+      background: #333;
+      color: white;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-top: 1rem;
+      transition: background 0.3s ease;
+    }
+    .github-button:hover {
+      background: #555;
+    }
+    .code-block {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 5px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+    .output-block {
+      background: #fdecea;
+      border: 1px solid #f5b7b1;
+      border-radius: 5px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="project-header">
+    <div class="project-content">
+      <a href="../../index.html" class="back-link">← Back to Portfolio</a>
+      <h1>CyberSense Pipeline</h1>
+      <p>Real-time security log ingestion, triage, and visualization pipeline that simulates a Security Operations Center (SOC) workflow</p>
+    </div>
+  </div>
+
+  <div class="project-content">
+    <img src="images/dashboard.png" alt="CyberSense SOC Dashboard" class="project-image" style="object-fit: contain; height: auto;">
+
+    <h2>Project Overview</h2>
+    <p>An end-to-end security analytics pipeline that mirrors how a <strong>Security Operations Center (SOC)</strong> ingests and triages authentication events. A multi-threaded producer generates realistic Linux <code>auth.log</code> lines, a regex-driven pipeline parses and risk-scores each event, results are persisted to an indexed datastore, and a <strong>Streamlit</strong> analyst dashboard surfaces KPIs, top attackers, and a live triage ticker — all updating in real time.</p>
+    <p>Each layer is decoupled through a bounded queue, so the producer can run at full speed without blocking the database, and the dashboard queries independently of ingestion.</p>
+
+    <h2>Technologies Used</h2>
+    <div class="tech-stack">
+      <span class="tech-tag">Python 3.11+</span>
+      <span class="tech-tag">SQLAlchemy</span>
+      <span class="tech-tag">SQLite</span>
+      <span class="tech-tag">PostgreSQL 15</span>
+      <span class="tech-tag">Streamlit</span>
+      <span class="tech-tag">Pandas</span>
+      <span class="tech-tag">Docker Compose</span>
+      <span class="tech-tag">pytest</span>
+      <span class="tech-tag">Multi-threading</span>
+      <span class="tech-tag">Regex</span>
+    </div>
+
+    <h2>Architecture</h2>
+    <div class="code-block">
+Producer (multi-threaded)&nbsp;&nbsp;&nbsp;&nbsp;→&nbsp;&nbsp;Bounded Queue (maxsize=10,000)<br>
+&nbsp;&nbsp;one worker per hostname<br>
+&nbsp;&nbsp;(prod-web-01, prod-db-01, corp-vpn)<br><br>
+Pipeline (single consumer)&nbsp;&nbsp;&nbsp;&nbsp;Parser (regex named groups → dict)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ Rules Engine (per-IP sliding window)<br><br>
+Storage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SQLite (dev) / Postgres (prod)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;indexes: timestamp, ip_address<br><br>
+Analyst Interface&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Streamlit Dashboard (separate process)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;KPIs · top attackers · live ticker
+    </div>
+
+    <h2>Pipeline Layers</h2>
+    <ol>
+      <li><strong>Ingestion</strong> (<code>pipeline/log_generator.py</code>): A <code>ThreadPoolExecutor</code> with 3–4 workers, each simulating a distinct host, emits realistic <code>auth.log</code> lines onto a shared <code>queue.Queue</code></li>
+      <li><strong>Processing</strong> (<code>pipeline/parser.py</code>): A single canonical regex with <strong>named capture groups</strong> (<code>timestamp</code>, <code>hostname</code>, <code>status</code>, <code>username</code>, <code>ip_address</code>, <code>port</code>) extracts and normalizes each line into a structured event</li>
+      <li><strong>Threat Intelligence</strong> (<code>pipeline/rules_engine.py</code>): An in-memory <strong>per-IP sliding window</strong> of failed attempts detects brute-force attacks — 5+ failures within 60 seconds escalates an event to <code>CRITICAL</code></li>
+      <li><strong>Storage</strong> (<code>database/</code>): A single <code>SecurityEvent</code> ORM model written through SQLAlchemy, with indexes on <code>timestamp</code> and <code>ip_address</code> to keep dashboard aggregates cheap</li>
+      <li><strong>Visualization</strong> (<code>dashboard.py</code>): A Streamlit SOC interface with KPI metric cards, a top-attackers bar chart, and a live triage ticker that highlights <code>CRITICAL</code> rows</li>
+    </ol>
+
+    <h2>Threat Detection Logic</h2>
+    <p>The rules engine maintains a sliding window of failed login timestamps per source IP. For each <code>Failed</code> event it appends the timestamp and evicts anything older than 60 seconds:</p>
+    <div class="code-block">
+failed_attempts = {ip: [ts1, ts2, ...]}<br><br>
+# On each Failed event:<br>
+window = failed_attempts[ip]<br>
+window.append(now)<br>
+window = [t for t in window if now - t &lt;= 60s]<br><br>
+if len(window) &gt;= 5:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;severity = "CRITICAL"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;incident_type = "Brute Force Attack"<br>
+else:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;severity = "LOW"&nbsp;&nbsp;# "INFO" for successful logins
+    </div>
+
+    <h2>The Parsing Regex</h2>
+    <p>A single canonical pattern with named groups handles every log line:</p>
+    <div class="code-block">
+r'(?P&lt;timestamp&gt;\w{3}\s+\d+\s+\d{2}:\d{2}:\d{2})\s+'<br>
+r'(?P&lt;hostname&gt;[\w-]+)\s+sshd\[\d+\]:\s+'<br>
+r'(?P&lt;status&gt;Failed|Accepted)\s+password\s+for\s+'<br>
+r'(?:invalid\s+user\s+)?(?P&lt;username&gt;\w+)\s+'<br>
+r'from\s+(?P&lt;ip_address&gt;[\d\.]+)\s+port\s+(?P&lt;port&gt;\d+)'
+    </div>
+    <p>Applied to a line like <code>May 28 14:05:23 server1 sshd[12345]: Failed password for invalid user root from 192.168.1.50 port 54321 ssh2</code>, it captures the timestamp, hostname, status, targeted username, source IP, and port in one pass.</p>
+
+    <h2>Database Schema</h2>
+    <div class="code-block">
+class SecurityEvent(Base):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= Integer, PK, autoincrement<br>
+&nbsp;&nbsp;&nbsp;&nbsp;timestamp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= DateTime, NOT NULL, INDEXED<br>
+&nbsp;&nbsp;&nbsp;&nbsp;hostname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= String(50), NOT NULL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= String(20), NOT NULL&nbsp;&nbsp;# Accepted | Failed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= String(50), NOT NULL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ip_address&nbsp;&nbsp;&nbsp;&nbsp;= String(45), NOT NULL, INDEXED<br>
+&nbsp;&nbsp;&nbsp;&nbsp;severity&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= String(15), NOT NULL&nbsp;&nbsp;# INFO | LOW | CRITICAL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;incident_type = String(50), NULLABLE&nbsp;&nbsp;# e.g. Brute Force Attack
+    </div>
+    <p>The pipeline writes through SQLAlchemy, so the same model code targets both SQLite and Postgres with only a DSN change. Local development uses SQLite (<code>sqlite:///cybersense.db</code>) for zero-infrastructure setup; <code>docker-compose.yml</code> defines the Postgres + pipeline + dashboard production deployment.</p>
+
+    <h2>Quick Start</h2>
+    <div class="code-block">
+$ git clone https://github.com/Marlontino/cybersense-pipeline.git<br>
+$ cd cybersense-pipeline<br>
+$ python -m venv venv && source venv/bin/activate<br>
+$ pip install -r requirements.txt<br><br>
+# Initialize the local SQLite database<br>
+$ python -m database.models<br><br>
+# Start the ingestion pipeline (generator → parser → rules → DB)<br>
+$ python app.py<br><br>
+# In a separate terminal, launch the analyst dashboard<br>
+$ streamlit run dashboard.py
+    </div>
+
+    <h2>Running via Docker (production target)</h2>
+    <p>The <code>docker-compose.yml</code> brings up Postgres, the pipeline, and the dashboard — each in its own networked container:</p>
+    <div class="code-block">
+$ docker compose up --build<br><br>
+# Dashboard available at http://localhost:8501<br>
+$ docker compose down&nbsp;&nbsp;&nbsp;&nbsp;# tear down, keep data<br>
+$ docker compose down -v&nbsp;# also wipe the Postgres volume
+    </div>
+
+    <h2>Screenshots</h2>
+    <img src="images/sidebyside.png" alt="Pipeline and dashboard running together" class="project-image" style="object-fit: contain; height: auto; max-width: 100%;">
+    <p style="text-align: center; color: #666; font-style: italic;">Producer terminal streaming batched commits (left) and the analyst dashboard updating in real time (right)</p>
+
+    <img src="images/log.png" alt="Pipeline log output" class="project-image" style="object-fit: contain; height: auto; max-width: 100%;">
+    <p style="text-align: center; color: #666; font-style: italic;">Operator-console-style structured logging with batched commits and graceful Ctrl+C shutdown</p>
+
+    <img src="images/pytest.png" alt="pytest output" class="project-image" style="object-fit: contain; height: auto; max-width: 100%;">
+    <p style="text-align: center; color: #666; font-style: italic;">19 tests covering the parser, rules engine, and log generator</p>
+
+    <h2>Skills Demonstrated</h2>
+    <ul>
+      <li><strong>Concurrency:</strong> Multi-threaded producer/consumer design with a bounded queue decoupling ingestion from processing</li>
+      <li><strong>Text processing:</strong> Regex with named capture groups for structured log parsing and normalization</li>
+      <li><strong>Stateful detection:</strong> Per-IP sliding-window algorithm for real-time brute-force identification</li>
+      <li><strong>Data engineering:</strong> SQLAlchemy ORM with dialect-agnostic models and strategic indexing</li>
+      <li><strong>Containerization:</strong> Multi-service Docker Compose deployment (Postgres + pipeline + dashboard)</li>
+      <li><strong>Visualization:</strong> Real-time analyst dashboard with Streamlit and pandas</li>
+      <li><strong>Testing:</strong> 19-test pytest suite across parser, rules engine, and generator</li>
+    </ul>
+
+    <h2>Project Highlights</h2>
+    <ul>
+      <li><strong>SOC-style workflow:</strong> Models the real ingestion → triage → visualization loop of a security operations center</li>
+      <li><strong>Decoupled layers:</strong> A bounded queue lets the producer run full-speed without blocking storage or the dashboard</li>
+      <li><strong>Dev/prod parity:</strong> Same ORM code runs on SQLite locally and Postgres in containers — only the DSN changes</li>
+      <li><strong>Real-time triage:</strong> Brute-force attacks escalate to CRITICAL within a 60-second window and surface immediately on the dashboard</li>
+    </ul>
+
+    <a href="https://github.com/Marlontino/cybersense-pipeline" class="github-button" target="_blank">View on GitHub</a>
+
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Niko Perry</p>
+  </footer>
+</body>
+</html>
