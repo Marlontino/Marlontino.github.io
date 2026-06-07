@@ -15,6 +15,7 @@
         <li><a href="#projects">Projects</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li><a href="https://docs.google.com/document/d/1B52tCbK7zdiyVu8VIHvSBgBZ8hzqxjy6Tp_7kznIrao/edit?usp=sharing" target="_blank" rel="noopener" class="nav-resume">Resume</a></li>
       </ul>
     </nav>
   </header>
@@ -36,27 +37,31 @@
         <img src="projects/cybersense-pipeline/images/dashboard.png" alt="CyberSense Pipeline SOC Dashboard" onerror="this.src='https://via.placeholder.com/300x200/c0392b/ffffff?text=CyberSense+Pipeline'">
         <h3>CyberSense Pipeline</h3>
         <p>End-to-end ETL pipeline ingesting SOC log streams in real time, parsing and enriching events with a multi-threaded producer, then powering a live Streamlit analytics dashboard for brute-force threat detection.</p>
+        <span class="project-metrics">Real-time SOC ETL · 3 producer threads · 60s sliding-window detection · 19 pytest cases · Postgres + Docker</span>
       </a>
       <a href="projects/san-diego-housing/san-diego-housing.html" class="project-card">
         <img src="projects/san-diego-housing/images/market_analysis_plots.png" alt="San Diego Housing Market Analysis" onerror="this.src='https://via.placeholder.com/300x200/1abc9c/ffffff?text=San+Diego+Housing'">
         <h3>San Diego Housing Analysis <span style="background:#FF4B4B; color:white; font-size:0.7rem; padding:0.15rem 0.5rem; border-radius:10px; vertical-align:middle; font-weight:bold;">LIVE DEMO</span></h3>
         <p>Auditable Pandas/NumPy preprocessing pipeline feeding a predictive regression model that prices San Diego Airbnb listings, with results surfaced through an interactive Streamlit dashboard.</p>
+        <span class="project-metrics">~13K listings · 101 neighborhoods · Random Forest MAE $85 · R² 0.69 · Live on Streamlit Cloud</span>
       </a>
       <a href="projects/weather/weather.html" class="project-card">
         <img src="projects/weather/images/wap.png" alt="Weather Automation Pipeline Project" onerror="this.src='https://via.placeholder.com/300x200/3498db/ffffff?text=Weather+Pipeline'">
         <h3>Weather Automation Pipeline</h3>
         <p>Containerized ETL architecture that ingests weather APIs into a PostgreSQL time-series warehouse via SQLAlchemy upsert logic, with a one-command Docker stack for reproducible deployment.</p>
+        <span class="project-metrics">PostgreSQL 16 · SQLAlchemy 2.x · Idempotent INSERT…ON CONFLICT upserts · Docker Compose · healthcheck-gated</span>
+      </a>
+      <a href="projects/stock-analyzer/stock-analyzer.html" class="project-card">
+        <img src="projects/stock-analyzer/images/cli.png" alt="Stock Analyzer Project" onerror="this.src='https://via.placeholder.com/300x200/1abc9c/ffffff?text=Stock+Analyzer'">
+        <h3>Stock Analyzer &amp; Algorithmic Trading</h3>
+        <p>Modular S&amp;P 500 analytics platform with a multi-threaded ingestion pipeline, thread-safe SQLite storage, and a scikit-learn voting classifier (LinearSVC + KNN + RandomForest) generating buy/sell/hold signals.</p>
+        <span class="project-metrics">230+ tickers · 1,600+ days of history · ~3.5 min vs ~20 min serial · 8-worker ThreadPoolExecutor · Voting classifier ML</span>
       </a>
     </div>
 
     <!-- Section B: Systems Engineering & CS Foundations -->
     <h3 class="project-section-heading">Systems Engineering &amp; CS Foundations</h3>
     <div class="projects-grid">
-      <a href="projects/stock-analyzer/stock-analyzer.html" class="project-card">
-        <img src="projects/stock-analyzer/images/cli.png" alt="Stock Analyzer Project" onerror="this.src='https://via.placeholder.com/300x200/1abc9c/ffffff?text=Stock+Analyzer'">
-        <h3>Stock Analyzer</h3>
-        <p>Multi-threaded S&P 500 analysis system with momentum, pairs trading, ML signals, and config-driven thresholds</p>
-      </a>
       <a href="projects/chess/chess.html" class="project-card">
         <img src="projects/chess/images/board.png" alt="Chess Game Project" onerror="this.src='https://via.placeholder.com/300x200/34495e/ffffff?text=Chess+Game'">
         <h3>Chess Game</h3>
@@ -143,6 +148,7 @@
     <h2>Contact</h2>
     <p>Email: <a href="mailto:perry.niko7@gmail.com">perry.niko7@gmail.com</a></p>
     <p>LinkedIn: <a href="https://www.linkedin.com/in/niko-perry-b66025267" target="_blank">Niko Perry</a></p>
+    <p>Resume: <a href="https://docs.google.com/document/d/1B52tCbK7zdiyVu8VIHvSBgBZ8hzqxjy6Tp_7kznIrao/edit?usp=sharing" target="_blank" rel="noopener">View full resume (Google Docs) →</a></p>
   </section>
   <footer>
     <p>&copy; 2026 Niko Perry</p>

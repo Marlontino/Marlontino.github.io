@@ -85,6 +85,29 @@
       font-family: 'Courier New', monospace;
       font-size: 0.9rem;
     }
+    /* Scan-able stat cards */
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0 2rem;
+    }
+    .insight-card {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .insight-card h4 {
+      margin: 0;
+      color: #3498db;
+      font-size: 1.5rem;
+    }
+    .insight-card p {
+      margin: 0.5rem 0 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
@@ -101,6 +124,26 @@
     
     <h2>Project Overview</h2>
     <p>An end-to-end data automation workflow that fetches real-world weather data from the Open-Meteo API, persists it in <strong>PostgreSQL</strong> with idempotent upserts, generates daily summaries directly from the database, and produces visualizations. The entire stack — Postgres plus the pipeline — runs with a single <code>docker-compose up</code>.</p>
+
+    <h2>Key Insights</h2>
+    <div class="insights-grid">
+      <div class="insight-card">
+        <h4>2</h4>
+        <p>Tables (hourly + daily summary)</p>
+      </div>
+      <div class="insight-card">
+        <h4>0</h4>
+        <p>Duplicates on re-run (idempotent upserts)</p>
+      </div>
+      <div class="insight-card">
+        <h4>1 cmd</h4>
+        <p><code>docker-compose up</code> spins up the full stack</p>
+      </div>
+      <div class="insight-card">
+        <h4>SQL</h4>
+        <p>Daily aggregates computed in-DB, not in CSVs</p>
+      </div>
+    </div>
 
     <h2>Technologies Used</h2>
     <div class="tech-stack">

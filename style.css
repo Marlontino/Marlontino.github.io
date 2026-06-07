@@ -103,6 +103,30 @@ footer {
   font-size: 0.9rem;
 }
 
+/* Metric strap line under Core Data cards — scan-able stats for recruiters */
+.project-metrics {
+  display: block;
+  margin: 0 1rem 1rem;
+  padding: 0.5rem 0.75rem;
+  background: #f4f7fb;
+  border-left: 3px solid #4a90e2;
+  border-radius: 4px;
+  color: #2c3e50;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Resume CTA pill in the header nav */
+.nav-resume {
+  background: #4a90e2;
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+}
+.nav-resume:hover {
+  background: #357abd;
+}
+
 /* Modal */
 .modal {
   display: none;
