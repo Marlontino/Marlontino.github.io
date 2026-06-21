@@ -127,6 +127,70 @@ footer {
   background: #357abd;
 }
 
+/* Hero positioning block — role, stack, tagline */
+#hero .hero-stack {
+  font-size: 1rem;
+  color: #4a90e2;
+  font-weight: 600;
+  margin: 0.25rem 0 0.75rem;
+  letter-spacing: 0.02em;
+}
+#hero .hero-tagline {
+  font-size: 1rem;
+  color: #555;
+  margin: 0;
+  max-width: 640px;
+}
+
+/* Experience & Education sections */
+.experience-item,
+.education-item {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #eee;
+}
+.experience-item:last-child,
+.education-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.experience-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+.experience-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #222;
+}
+.experience-dates {
+  color: #777;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.experience-company {
+  margin: 0 0 0.5rem;
+  color: #4a90e2;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.experience-item ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}
+.experience-item li {
+  margin-bottom: 0.35rem;
+  color: #444;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
 /* Modal */
 .modal {
   display: none;
